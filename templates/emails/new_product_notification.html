@@ -1,0 +1,36 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}New Product Launch - {{ product.name }}{% endblock %}
+
+{% block content %}
+<h1>Exciting New Product Alert! ✨</h1>
+
+<p>Hi {{ user.first_name }},</p>
+
+<p>We're thrilled to introduce our latest addition to the Emerald Secrets family:</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;">
+    <h2 style="font-size: 22px; margin-bottom: 10px;">{{ product.name }}</h2>
+    <p style="font-size: 18px; color: #2D7A6E; font-weight: bold;">₹{{ product.price }}</p>
+</div>
+
+<p>{{ product.description }}</p>
+
+<div class="highlight-box">
+    <p><strong>Key Benefits:</strong></p>
+    <ul style="margin-left: 20px; margin-top: 10px;">
+        {% for benefit in product.benefits %}
+        <li>{{ benefit }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<center>
+    <a href="{{ site_url }}/products/{{ product.slug }}" class="btn-primary">Shop Now</a>
+</center>
+
+<p style="margin-top: 30px;"><strong>Limited Launch Offer:</strong> Use code <strong>NEWLAUNCH15</strong> for 15% off on this product!</p>
+
+<p>This offer is valid for the next 48 hours only. Don't miss out!</p>
+{% endblock %}

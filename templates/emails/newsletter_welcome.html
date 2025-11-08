@@ -1,0 +1,43 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Welcome to Our Newsletter{% endblock %}
+
+{% block content %}
+<h1>You're In! 🎊</h1>
+
+<p>Hi there,</p>
+
+<p>Thank you for subscribing to the Emerald Secrets newsletter! You've just joined a community of natural beauty lovers.</p>
+
+<p>Here's what you can expect from us:</p>
+
+<div class="highlight-box">
+    <ul style="margin-left: 20px;">
+        <li>✨ Exclusive product launches</li>
+        <li>💰 Special discounts and offers</li>
+        <li>🌿 Natural skincare tips & tutorials</li>
+        <li>📦 Early access to new collections</li>
+        <li>🎁 Subscriber-only giveaways</li>
+    </ul>
+</div>
+
+<p>As a welcome gift, here's <strong>10% OFF</strong> your next purchase!</p>
+
+<center>
+    <div style="background-color: #2D7A6E; color: white; padding: 20px; border-radius: 8px; display: inline-block; margin: 20px 0;">
+        <p style="font-size: 12px; margin-bottom: 5px; color: white;">Your Discount Code</p>
+        <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; color: white;">NEWSLETTER10</p>
+    </div>
+</center>
+
+<center>
+    <a href="{{ site_url }}" class="btn-primary">Start Shopping</a>
+</center>
+
+<div class="divider"></div>
+
+<p style="font-size: 13px; color: #7A7A7A;">
+    You're receiving this email because you subscribed to our newsletter. 
+    You can <a href="{{ unsubscribe_url }}" style="color: #2D7A6E;">unsubscribe</a> at any time.
+</p>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="account-section">
+    <div class="account-container">
+        <h1>My Account</h1>
+        
+        <div class="account-layout">
+            <!-- Sidebar -->
+            <aside class="account-sidebar">
+                <a href="{% url 'accounts:order_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'order_list' %}active{% endif %}">
+                    <i class="fas fa-box"></i> My Orders
+                </a>
+                <a href="{% url 'accounts:wishlist' %}" class="sidebar-link {% if request.resolver_match.url_name == 'wishlist' %}active{% endif %}">
+                    <i class="far fa-heart"></i> Wishlist
+                </a>
+                <a href="{% url 'accounts:address_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'address_list' %}active{% endif %}">
+                    <i class="fas fa-map-marker-alt"></i> Addresses
+                </a>
+                <a href="{% url 'accounts:profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                    <i class="fas fa-user"></i> Profile Info
+                </a>
+                <a href="{% url 'accounts:settings' %}" class="sidebar-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                
+                <!-- Logout Button in Sidebar - FIXED WITH POST FORM -->
+                <div class="sidebar-divider"></div>
+                <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-link logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="account-main">
+                <div class="main-header">
+                    <h2>My Orders</h2>
+                    <p class="subtitle">View and manage your orders</p>
+                </div>
+
+                {% if orders %}
+                <div class="orders-container">
+                    {% for order in orders %}
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-title">
+                                <h3>Order #{{ order.id }}</h3>
+                                <p class="order-date">Placed on {{ order.created_at|date:"M d, Y" }}</p>
+                            </div>
+                            <span class="order-status {{ order.status }}">
+                                <i class="fas fa-circle"></i>
+                                {{ order.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-image">
+                                {% for item in order.items.all|slice:":1" %}
+                                <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" 
+                                     onerror="this.src='{% static 'images/placeholder.png' %}'">
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="order-details">
+                                <h4>
+                                    {% for item in order.items.all|slice:":1" %}
+                                        {{ item.product.name }}
+                                    {% endfor %}
+                                </h4>
+                                <p class="order-items">
+                                    {{ order.items.count }} item{{ order.items.count|pluralize }}
+                                </p>
+                                <p class="order-total">
+                                    Total: <strong>₹{{ order.total }}</strong>
+                                </p>
+                                {% if order.items.count > 1 %}
+                                <p class="more-items">
+                                    <i class="fas fa-plus-circle"></i>
+                                    {{ order.items.count|add:"-1" }} more item{{ order.items.count|add:"-1"|pluralize }}
+                                </p>
+                                {% endif %}
+                            </div>
+
+                            <div class="order-actions">
+                                <a href="{% url 'accounts:order_detail' order.id %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                {% if order.status == 'shipped' %}
+                                <a href="#" class="btn btn-outline">
+                                    <i class="fas fa-truck"></i> Track Order
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <h3>No Orders Yet</h3>
+                    <p>You haven't placed any orders yet. Start shopping and discover our amazing products!</p>
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag"></i> Browse Products
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+document.getElementById('logout-form').addEventListener('submit', function(e) {
+    // Form will submit normally via POST
+});
+
+// If you click the logout link directly, submit the form
+document.querySelectorAll('.logout-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('logout-form').submit();
+    });
+});
+</script>
+
+{% endblock %}

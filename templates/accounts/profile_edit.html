@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - Emerald Secrets{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="breadcrumb">
+        <li><a href="{% url 'products:home' %}">Home</a></li>
+        <li><a href="{% url 'accounts:profile' %}">Profile</a></li>
+        <li>Edit</li>
+    </div>
+
+    <h1>Edit Your Profile</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="profile-form">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone" value="{{ profile.phone }}" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date_of_birth">Date of Birth</label>
+                            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ profile.date_of_birth|date:'Y-m-d' }}" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profile_image">Profile Picture</label>
+                            <input type="file" id="profile_image" name="profile_image" accept="image/*" class="form-control">
+                            {% if profile.profile_image %}
+                                <small class="text-muted">Current: <img src="{{ profile.profile_image.url }}" style="max-width: 100px; margin-top: 10px;"></small>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'accounts:profile' %}" class="btn btn-outline">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

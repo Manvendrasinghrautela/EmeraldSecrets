@@ -1,0 +1,356 @@
+/* ===============================================================
+   AFFILIATE.CSS - Affiliate Program Pages
+   =============================================================== */
+
+   .affiliate-hero {
+    background: linear-gradient(135deg, var(--cream-bg) 0%, var(--light-bg) 100%);
+    padding: 6rem 2rem;
+    text-align: center;
+}
+
+.affiliate-hero h1 {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.affiliate-hero p {
+    font-size: 1.25rem;
+    color: var(--text-gray);
+    max-width: 800px;
+    margin: 0 auto 2.5rem;
+}
+
+/* Why Join Section */
+.why-join-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.why-join-section h2 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+
+.benefit-card {
+    background-color: white;
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.benefit-card:hover {
+    transform: translateY(-8px);
+}
+
+.benefit-icon {
+    width: 80px;
+    height: 80px;
+    background-color: var(--cream-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: var(--primary-green);
+    font-size: 2rem;
+}
+
+.benefit-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.benefit-card p {
+    color: var(--text-gray);
+    line-height: 1.7;
+}
+
+/* How It Works */
+.how-it-works {
+    padding: 5rem 2rem;
+    background-color: var(--cream-bg);
+}
+
+.how-it-works h2 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.steps-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.step-item {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.step-content p {
+    color: var(--text-gray);
+    line-height: 1.7;
+}
+
+/* Program Features */
+.program-features {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.program-features h2 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.feature-check {
+    color: var(--primary-green);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.feature-item p {
+    color: var(--text-dark);
+    line-height: 1.7;
+}
+
+/* CTA Section */
+.affiliate-cta {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+    color: white;
+    padding: 5rem 2rem;
+    text-align: center;
+    margin: 4rem 2rem;
+    border-radius: var(--border-radius);
+}
+
+.affiliate-cta h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.affiliate-cta p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+
+/* Affiliate Dashboard */
+.affiliate-dashboard {
+    max-width: 1400px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+}
+
+.affiliate-dashboard h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-subtitle {
+    color: var(--text-gray);
+    margin-bottom: 3rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background-color: var(--cream-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-green);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-change {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    color: #28A745;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.stat-label {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* Referral Link */
+.referral-section {
+    background-color: white;
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 3rem;
+}
+
+.referral-section h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.referral-link-box {
+    display: flex;
+    gap: 1rem;
+}
+
+.referral-link-box input {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: var(--light-bg);
+}
+
+.copy-btn {
+    padding: 1rem 2rem;
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.copy-btn:hover {
+    background-color: var(--secondary-green);
+}
+
+/* Dashboard Tables */
+.dashboard-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+
+.table-section {
+    background-color: white;
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.table-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.simple-list {
+    list-style: none;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-value {
+    color: var(--primary-green);
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .affiliate-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .dashboard-tables {
+        grid-template-columns: 1fr;
+    }
+
+    .features-list {
+        grid-template-columns: 1fr;
+    }
+}

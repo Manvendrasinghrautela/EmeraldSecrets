@@ -1,0 +1,200 @@
+<!-- User Account Dropdown Menu -->
+<div class="dropdown-menu">
+    <!-- User Info Header -->
+    <div class="dropdown-header">
+        <div class="user-avatar">
+            {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="{{ user.get_full_name }}">
+            {% else %}
+                <i class="fas fa-user-circle"></i>
+            {% endif %}
+        </div>
+        <div class="user-info">
+            <strong>{{ user.get_full_name|default:user.username }}</strong>
+            <small>{{ user.email }}</small>
+        </div>
+    </div>
+    
+    <!-- Dropdown Links -->
+    <div class="dropdown-divider"></div>
+    
+    <a href="{% url 'accounts:profile' %}" class="dropdown-item">
+        <i class="fas fa-user"></i>
+        <span>My Profile</span>
+    </a>
+    
+    <a href="{% url 'orders:order_list' %}" class="dropdown-item">
+        <i class="fas fa-shopping-bag"></i>
+        <span>My Orders</span>
+    </a>
+    
+    <a href="{% url 'products:wishlist' %}" class="dropdown-item">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+        {% if wishlist_count > 0 %}
+        <span class="badge-count">{{ wishlist_count }}</span>
+        {% endif %}
+    </a>
+    
+    <a href="{% url 'accounts:addresses' %}" class="dropdown-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Addresses</span>
+    </a>
+    
+    <a href="{% url 'accounts:settings' %}" class="dropdown-item">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+    </a>
+    
+    <div class="dropdown-divider"></div>
+    
+    <a href="{% url 'accounts:logout' %}" class="dropdown-item logout">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+    </a>
+</div>
+
+<style>
+    /* Dropdown Menu Styles */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        min-width: 280px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        animation: fadeIn 0.2s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .dropdown-header {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #2D5F3F 0%, #4A7C59 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .user-avatar i {
+        font-size: 2.5rem;
+        color: white;
+    }
+    
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .user-info strong {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    .user-info small {
+        font-size: 0.75rem;
+        opacity: 0.9;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background: #e5e5e5;
+        margin: 0.5rem 0;
+    }
+    
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.875rem 1.5rem;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.3s;
+        position: relative;
+    }
+    
+    .dropdown-item:hover {
+        background: #f8f9fa;
+        color: #2D5F3F;
+        padding-left: 1.75rem;
+    }
+    
+    .dropdown-item i {
+        width: 20px;
+        text-align: center;
+        font-size: 1.125rem;
+    }
+    
+    .dropdown-item span {
+        flex: 1;
+    }
+    
+    .dropdown-item.logout {
+        color: #E74C3C;
+    }
+    
+    .dropdown-item.logout:hover {
+        background: #FEF5F5;
+        color: #c0392b;
+    }
+    
+    .badge-count {
+        background: #E74C3C;
+        color: white;
+        border-radius: 12px;
+        padding: 0.125rem 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .dropdown-menu {
+            right: -20px;
+            min-width: 260px;
+        }
+    }
+</style>

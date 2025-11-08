@@ -1,0 +1,33 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}We Received Your Message{% endblock %}
+
+{% block content %}
+<h1>Thank You for Contacting Us! 💚</h1>
+
+<p>Hi {{ name }},</p>
+
+<p>We've received your message and our support team will get back to you within 24-48 hours.</p>
+
+<div class="highlight-box">
+    <p><strong>Your Message:</strong></p>
+    <p style="margin-top: 10px; color: #4A4A4A;">{{ message }}</p>
+</div>
+
+<p>In the meantime, you might find these resources helpful:</p>
+
+<ul style="margin-left: 20px; margin-top: 15px;">
+    <li><a href="{{ site_url }}/faq" style="color: #2D7A6E;">Frequently Asked Questions</a></li>
+    <li><a href="{{ site_url }}/shipping" style="color: #2D7A6E;">Shipping Information</a></li>
+    <li><a href="{{ site_url }}/returns" style="color: #2D7A6E;">Return Policy</a></li>
+</ul>
+
+<p style="margin-top: 30px;">For urgent inquiries, you can reach us via WhatsApp at <strong>+91 98765 43210</strong></p>
+
+<p>Thank you for your patience!</p>
+
+<p style="margin-top: 30px;">
+    Best regards,<br>
+    <strong>Emerald Secrets Support Team</strong>
+</p>
+{% endblock %}

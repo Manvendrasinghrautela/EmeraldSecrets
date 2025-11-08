@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Shop by Category</h1>
+        <p>Find exactly what you're looking for</p>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="collection-grid">
+        {% for category in categories %}
+        <div class="collection-card">
+            <img src="{{ category.image.url }}" alt="{{ category.name }}">
+            <div class="collection-info">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.products_count }} Products</p>
+                <a href="{% url 'products:category' category.slug %}" class="btn btn-white" style="margin-top: 1rem;">View Products</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

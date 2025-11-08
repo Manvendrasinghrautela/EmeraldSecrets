@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="affiliate-dashboard">
+    <div class="page-header">
+        <h1>Affiliate Profile</h1>
+        <a href="{% url 'affiliate:dashboard' %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="profile-container">
+        <!-- Profile Info Card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                    <p>{{ user.email }}</p>
+                    <span class="profile-badge active">Active Affiliate</span>
+                </div>
+            </div>
+
+            <div class="profile-stats-mini">
+                <div class="mini-stat">
+                    <span class="mini-stat-label">Member Since</span>
+                    <span class="mini-stat-value">{{ user.date_joined|date:"M Y" }}</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">Total Earned</span>
+                    <span class="mini-stat-value">₹12,450</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-stat-label">Commission Rate</span>
+                    <span class="mini-stat-value">15%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Details -->
+        <div class="details-grid">
+            <div class="detail-card">
+                <h3><i class="fas fa-user-circle"></i> Personal Information</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Full Name:</span>
+                    <span class="detail-value">{{ user.first_name }} {{ user.last_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{ user.email }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">+91 98765 43210</span>
+                </div>
+                <a href="{% url 'affiliate:settings' %}" class="btn btn-outline btn-sm">Edit Profile</a>
+            </div>
+
+            <div class="detail-card">
+                <h3><i class="fas fa-credit-card"></i> Payment Information</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method:</span>
+                    <span class="detail-value">Bank Transfer</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Name:</span>
+                    <span class="detail-value">John Doe</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Number:</span>
+                    <span class="detail-value">****5678</span>
+                </div>
+                <a href="{% url 'affiliate:settings' %}" class="btn btn-outline btn-sm">Update Payment</a>
+            </div>
+
+            <div class="detail-card">
+                <h3><i class="fas fa-globe"></i> Online Presence</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Website:</span>
+                    <span class="detail-value"><a href="#">yourwebsite.com</a></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Instagram:</span>
+                    <span class="detail-value"><a href="#">@yourusername</a></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">YouTube:</span>
+                    <span class="detail-value"><a href="#">Your Channel</a></span>
+                </div>
+                <a href="{% url 'affiliate:settings' %}" class="btn btn-outline btn-sm">Update Links</a>
+            </div>
+
+            <div class="detail-card">
+                <h3><i class="fas fa-chart-line"></i> Performance Tier</h3>
+                <div class="tier-progress">
+                    <div class="tier-current">
+                        <span class="tier-name">Silver Tier</span>
+                        <span class="tier-commission">15% Commission</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                    <p class="tier-next">20 more sales to reach Gold Tier (20% commission)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Referral Overview -->
+        <div class="referral-overview">
+            <h3>Referral Overview</h3>
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <i class="fas fa-link"></i>
+                    <div class="overview-content">
+                        <span class="overview-value">5</span>
+                        <span class="overview-label">Active Links</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <i class="fas fa-users"></i>
+                    <div class="overview-content">
+                        <span class="overview-value">1,234</span>
+                        <span class="overview-label">Total Clicks</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <i class="fas fa-shopping-bag"></i>
+                    <div class="overview-content">
+                        <span class="overview-value">42</span>
+                        <span class="overview-label">Conversions</span>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <i class="fas fa-percentage"></i>
+                    <div class="overview-content">
+                        <span class="overview-value">3.4%</span>
+                        <span class="overview-label">Conversion Rate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

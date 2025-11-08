@@ -1,0 +1,188 @@
+/* ===============================================================
+   ORDERS.CSS - Cart & Checkout Pages
+   =============================================================== */
+
+   .checkout-section {
+    max-width: 1400px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+}
+
+.checkout-section h1 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+}
+
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+}
+
+/* Shipping Form */
+.shipping-form {
+    background-color: white;
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.shipping-form h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+}
+
+/* Order Summary */
+.order-summary {
+    background-color: white;
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    height: fit-content;
+}
+
+.order-summary h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.summary-row span:first-child {
+    color: var(--text-gray);
+}
+
+.summary-row span:last-child {
+    font-weight: 600;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.place-order-btn {
+    width: 100%;
+    padding: 1.25rem;
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 1rem;
+}
+
+.place-order-btn:hover {
+    background-color: var(--secondary-green);
+}
+
+.terms-text {
+    font-size: 0.875rem;
+    color: var(--text-gray);
+    text-align: center;
+}
+
+.terms-text a {
+    color: var(--primary-green);
+    text-decoration: underline;
+}
+
+/* Payment Method Section */
+.payment-section {
+    background-color: white;
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-top: 2rem;
+}
+
+.payment-section h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.payment-options {
+    display: grid;
+    gap: 1rem;
+}
+
+.payment-option {
+    padding: 1.5rem;
+    border: 2px solid #E5E5E5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.payment-option:hover {
+    border-color: var(--primary-green);
+}
+
+.payment-option.selected {
+    border-color: var(--primary-green);
+    background-color: #F0F9F8;
+}
+
+.payment-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

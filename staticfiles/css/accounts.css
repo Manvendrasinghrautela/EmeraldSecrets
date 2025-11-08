@@ -1,0 +1,232 @@
+/* ===============================================================
+   ACCOUNTS.CSS - User Account Pages
+   =============================================================== */
+
+   .account-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.account-section h1 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+}
+
+.account-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+}
+
+/* Sidebar */
+.account-sidebar {
+    background-color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    height: fit-content;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    color: var(--text-dark);
+}
+
+.sidebar-link i {
+    font-size: 1.25rem;
+}
+
+.sidebar-link:hover {
+    background-color: var(--cream-bg);
+}
+
+.sidebar-link.active {
+    background-color: var(--primary-green);
+    color: white;
+}
+
+/* Account Main Content */
+.account-main {
+    background-color: white;
+    padding: 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.account-main h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Order Card */
+.order-card {
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: box-shadow 0.2s;
+}
+
+.order-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.order-header h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.order-header p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.order-status {
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.order-status.delivered {
+    background-color: #D4EDDA;
+    color: #155724;
+}
+
+.order-status.pending {
+    background-color: #FFF3CD;
+    color: #856404;
+}
+
+.order-body {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 2rem;
+    align-items: center;
+}
+
+.order-body img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.order-details h4 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.order-details p {
+    color: var(--text-gray);
+}
+
+.order-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-brown);
+}
+
+/* Profile Info */
+.profile-form {
+    max-width: 800px;
+}
+
+.profile-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.profile-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.profile-form input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.profile-form input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+}
+
+/* Settings */
+.settings-section {
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+}
+
+.settings-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .account-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .order-body {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .order-body img {
+        margin: 0 auto;
+    }
+
+    .profile-form .form-row {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Our Collections</h1>
+        <p>Curated selections just for you</p>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="collection-grid">
+        {% for collection in collections %}
+        <a href="{% url 'products:collection_detail' collection.slug %}" class="collection-card">
+            <img src="{{ collection.image.url }}" alt="{{ collection.name }}">
+            <div class="collection-info">
+                <h3>{{ collection.name }}</h3>
+                <p>Explore Now</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

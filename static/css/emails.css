@@ -1,0 +1,196 @@
+/* ===============================================================
+   EMAILS.CSS - Email Template Styles (Inline)
+   =============================================================== */
+
+/* Note: These styles are meant to be inline in email templates
+   for maximum email client compatibility */
+
+   body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: #FAF8F5;
+    padding: 20px;
+    margin: 0;
+}
+
+.email-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.email-header {
+    background: linear-gradient(135deg, #2D7A6E 0%, #1E5A4F 100%);
+    padding: 30px 40px;
+    text-align: center;
+    color: white;
+}
+
+.email-logo {
+    font-size: 28px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.email-body {
+    padding: 40px;
+    color: #1A1A1A;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+.email-body h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #1A1A1A;
+    font-weight: bold;
+}
+
+.email-body h2 {
+    font-size: 18px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #1A1A1A;
+    font-weight: bold;
+}
+
+.email-body p {
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #4A4A4A;
+}
+
+.email-body a {
+    color: #2D7A6E;
+    text-decoration: underline;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: #2D7A6E;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    margin: 20px 0;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #1E5A4F;
+}
+
+.email-footer {
+    background-color: #8B6F47;
+    padding: 30px 40px;
+    text-align: center;
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+}
+
+.email-footer p {
+    margin: 5px 0;
+    color: rgba(255,255,255,0.9);
+}
+
+.email-footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+.social-links {
+    margin: 15px 0;
+}
+
+.social-links a {
+    display: inline-block;
+    margin: 0 8px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.divider {
+    height: 1px;
+    background-color: #E5E5E5;
+    margin: 25px 0;
+}
+
+.highlight-box {
+    background-color: #F5F3F1;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid #2D7A6E;
+}
+
+.highlight-box ul {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.highlight-box li {
+    margin-bottom: 8px;
+    color: #4A4A4A;
+}
+
+/* Email Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+thead {
+    background-color: #F5F3F1;
+}
+
+tbody tr {
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.order-table-header {
+    background-color: #F5F3F1;
+    font-weight: bold;
+    color: #1A1A1A;
+    border-bottom: 2px solid #E5E5E5;
+}
+
+.order-table-total {
+    background-color: #F5F3F1;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.code-box {
+    background-color: #2D7A6E;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.code-box p:first-child {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: rgba(255,255,255,0.8);
+}
+
+.code-box p:last-child {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin: 0;
+}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>{{ category.name }}</h1>
+        <p>{{ category.description }}</p>
+    </div>
+</section>
+
+<section class="products-section">
+    <div style="display: grid; grid-template-columns: 250px 1fr; gap: 2rem;">
+        <!-- Filters -->
+        <aside style="background-color: #f8f9fa; padding: 2rem; border-radius: 12px; height: fit-content;">
+            <h3 style="margin-bottom: 2rem;">Filters</h3>
+            
+            <!-- Subcategories -->
+            {% if subcategories %}
+            <div style="margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem; font-weight: 600;">Subcategories</h4>
+                {% for subcat in subcategories %}
+                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                    <input type="checkbox" name="subcat" value="{{ subcat.slug }}">
+                    <span>{{ subcat.name }}</span>
+                </label>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Price Range -->
+            <div style="margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem; font-weight: 600;">Price Range</h4>
+                <input type="range" min="0" max="100000" step="1000" style="width: 100%;">
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <input type="number" placeholder="Min" style="flex: 1; padding: 0.75rem; border: 1px solid #e5e5e5; border-radius: 8px;">
+                    <input type="number" placeholder="Max" style="flex: 1; padding: 0.75rem; border: 1px solid #e5e5e5; border-radius: 8px;">
+                </div>
+            </div>
+
+            <!-- Sort -->
+            <div>
+                <label style="display: block; margin-bottom: 1rem; font-weight: 600;">Sort By</label>
+                <select style="width: 100%; padding: 0.75rem; border: 1px solid #e5e5e5; border-radius: 8px;">
+                    <option>Newest</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Most Popular</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- Products -->
+        <main>
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                        <button class="wishlist-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">
+                            <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+                        </h3>
+                        <div class="product-price">
+                            <span class="current-price">₹{{ product.price }}</span>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</section>
+
+{% endblock %}

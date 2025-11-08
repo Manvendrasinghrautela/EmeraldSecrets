@@ -1,0 +1,37 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Welcome to Emerald Secrets{% endblock %}
+
+{% block content %}
+<h1>Welcome to Emerald Secrets, {{ user.first_name }}! 🌿</h1>
+
+<p>We're thrilled to have you join our community of natural beauty enthusiasts!</p>
+
+<p>At Emerald Secrets, we believe in the power of nature to enhance your natural beauty. All our products are:</p>
+
+<div class="highlight-box">
+    <ul style="margin-left: 20px;">
+        <li>100% Natural & Organic</li>
+        <li>Handcrafted with Love</li>
+        <li>Dermatologically Tested</li>
+        <li>Ethically Sourced</li>
+    </ul>
+</div>
+
+<p>To get started, explore our curated collections and discover products perfect for your skincare routine.</p>
+
+<center>
+    <a href="{{ site_url }}" class="btn-primary">Start Shopping</a>
+</center>
+
+<div class="divider"></div>
+
+<p>As a special welcome gift, use code <strong>WELCOME10</strong> to get 10% off your first order!</p>
+
+<p>If you have any questions, our support team is here to help at <a href="mailto:support@emeraldsecrets.com">support@emeraldsecrets.com</a></p>
+
+<p style="margin-top: 30px;">
+    Warm regards,<br>
+    <strong>The Emerald Secrets Team</strong>
+</p>
+{% endblock %}

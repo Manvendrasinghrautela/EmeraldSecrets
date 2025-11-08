@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>{{ collection.name }}</h1>
+        <p>{{ collection.description }}</p>
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="section-header">
+        <h2>Featured Products</h2>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-image">
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                {% if product.is_new %}
+                <span class="product-badge new">New</span>
+                {% endif %}
+            </div>
+            
+            <div class="product-info">
+                <h3 class="product-name">
+                    <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+                </h3>
+                <div class="product-price">
+                    <span class="current-price">₹{{ product.price }}</span>
+                </div>
+                <form method="post" action="{% url 'products:add_to_cart' product.id %}" style="flex: 1;">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" id="cart-quantity" value="1">
+                    <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add to Cart Function
+function addToCart(productId) {
+    fetch(`/orders/add-to-cart/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showMessage('Product added to cart!', 'success');
+            
+            // Update cart count in header
+            updateCartCount();
+        } else {
+            showMessage(data.message || 'Failed to add to cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Something went wrong!', 'error');
+    });
+}
+
+// Toggle Wishlist Function
+function toggleWishlist(productId, button) {
+    fetch(`/products/wishlist/toggle/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Toggle heart icon
+            const icon = button.querySelector('i');
+            if (data.added) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                showMessage('Added to wishlist!', 'success');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                showMessage('Removed from wishlist', 'info');
+            }
+        } else {
+            if (data.message === 'Login required') {
+                window.location.href = '/accounts/login/?next=' + window.location.pathname;
+            } else {
+                showMessage(data.message || 'Failed to update wishlist', 'error');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Something went wrong!', 'error');
+    });
+}
+
+// Get CSRF Token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Show Message Function
+function showMessage(message, type) {
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `alert alert-${type}`;
+    messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+        color: white;
+        border-radius: 4px;
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+    `;
+    messageDiv.textContent = message;
+    
+    document.body.appendChild(messageDiv);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        messageDiv.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => messageDiv.remove(), 300);
+    }, 3000);
+}
+
+// Update Cart Count
+function updateCartCount() {
+    fetch('/orders/cart/count/')
+        .then(response => response.json())
+        .then(data => {
+            const cartBadge = document.querySelector('.cart-count');
+            if (cartBadge) {
+                cartBadge.textContent = data.count;
+            }
+        });
+}
+
+// Add CSS animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

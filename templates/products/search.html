@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Search Results</h1>
+        <p>{% if query %}Results for "{{ query }}"{% else %}Search our collection{% endif %}</p>
+    </div>
+</section>
+
+<section class="search-section">
+    <form method="get" class="search-box">
+        <input type="text" name="q" placeholder="Search products..." value="{{ query }}" autofocus>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    {% if products %}
+    <div style="margin-bottom: 2rem;">
+        <h3>Found {{ results_count }} Product{{ results_count|pluralize }}</h3>
+    </div>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-image">
+                {% if product.main_image %}
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="{{ product.name }}">
+                {% endif %}
+                {% if product.is_new %}
+                <span class="product-badge new">New</span>
+                {% endif %}
+                <button class="wishlist-btn" onclick="toggleWishlist({{ product.id }}, this)">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            <div class="product-info">
+                <p class="product-category">{{ product.category.name }}</p>
+                <h3 class="product-name">
+                    <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+                </h3>
+                <div class="product-price">
+                    <span class="current-price">₹{{ product.price }}</span>
+                </div>
+                <div class="product-actions">
+                    <button class="btn btn-primary add-to-cart-btn" onclick="addToCart({{ product.id }})">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 3rem;">
+        {% if page_obj.has_previous %}
+        <a href="?q={{ query }}&page=1" class="btn btn-outline">First</a>
+        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+        {% endif %}
+
+        <span style="padding: 0.75rem 1.5rem;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
+        <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div style="text-align: center; padding: 4rem 2rem;">
+        <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">No products found</h3>
+        <p style="color: #6c757d; margin-bottom: 2rem;">
+            {% if query %}
+            No results for "{{ query }}". Try a different search term.
+            {% else %}
+            Enter a search term to find products
+            {% endif %}
+        </p>
+        <a href="{% url 'products:product_list' %}" class="btn btn-primary">Browse All Products</a>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Popular Searches -->
+<section class="products-section">
+    <div class="section-header">
+        <h2>Popular Searches</h2>
+    </div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="?q=organic" class="btn btn-outline">Organic</a>
+        <a href="?q=natural" class="btn btn-outline">Natural</a>
+        <a href="?q=skincare" class="btn btn-outline">Skincare</a>
+        <a href="?q=beauty" class="btn btn-outline">Beauty</a>
+        <a href="?q=wellness" class="btn btn-outline">Wellness</a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add to Cart Function
+function addToCart(productId) {
+    fetch(`/orders/add-to-cart/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showMessage('Product added to cart!', 'success');
+            updateCartCount();
+        } else {
+            showMessage(data.message || 'Failed to add to cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Something went wrong!', 'error');
+    });
+}
+
+// Toggle Wishlist Function
+function toggleWishlist(productId, button) {
+    fetch(`/products/wishlist/toggle/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const icon = button.querySelector('i');
+            if (data.added) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                showMessage('Added to wishlist!', 'success');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                showMessage('Removed from wishlist', 'info');
+            }
+        } else {
+            if (data.message === 'Login required') {
+                window.location.href = '/accounts/login/?next=' + window.location.pathname;
+            } else {
+                showMessage(data.message || 'Failed to update wishlist', 'error');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Something went wrong!', 'error');
+    });
+}
+
+// Get CSRF Token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Show Message Function
+function showMessage(message, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `alert alert-${type}`;
+    messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+        color: white;
+        border-radius: 4px;
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+    `;
+    messageDiv.textContent = message;
+    document.body.appendChild(messageDiv);
+    setTimeout(() => {
+        messageDiv.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => messageDiv.remove(), 300);
+    }, 3000);
+}
+
+// Update Cart Count
+function updateCartCount() {
+    fetch('/orders/cart/count/')
+        .then(response => response.json())
+        .then(data => {
+            const cartBadge = document.querySelector('.cart-count');
+            if (cartBadge) {
+                cartBadge.textContent = data.count;
+            }
+        });
+}
+
+// Add CSS animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="affiliate-dashboard">
+    <div class="page-header">
+        <h1>Performance Statistics</h1>
+        <div class="date-filter">
+            <select id="dateRange">
+                <option value="7">Last 7 Days</option>
+                <option value="30" selected>Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="365">Last Year</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Total Earnings</div>
+            <div class="stat-value">₹12,450</div>
+            <div class="stat-change positive">+15.3% from last month</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">👁️</div>
+            <div class="stat-label">Total Clicks</div>
+            <div class="stat-value">1,234</div>
+            <div class="stat-change positive">+8.2% from last month</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🛍️</div>
+            <div class="stat-label">Conversions</div>
+            <div class="stat-value">42</div>
+            <div class="stat-change positive">+12.5% from last month</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-label">Conversion Rate</div>
+            <div class="stat-value">3.4%</div>
+            <div class="stat-change negative">-0.5% from last month</div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="chart-card">
+            <h2>Earnings Over Time</h2>
+            <div class="chart-placeholder">
+                <canvas id="earningsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>Clicks vs Conversions</h2>
+            <div class="chart-placeholder">
+                <canvas id="conversionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Performing Links -->
+    <div class="performance-section">
+        <h2>Top Performing Links</h2>
+        <div class="performance-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Link/Campaign</th>
+                        <th>Clicks</th>
+                        <th>Sales</th>
+                        <th>Revenue</th>
+                        <th>Conversion Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="link-info">
+                                <span class="link-name">Main Store Link</span>
+                                <span class="link-type">General</span>
+                            </div>
+                        </td>
+                        <td>456</td>
+                        <td>18</td>
+                        <td>₹5,400</td>
+                        <td><span class="rate-badge good">3.9%</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="link-info">
+                                <span class="link-name">Rose Water - Instagram</span>
+                                <span class="link-type">Product</span>
+                            </div>
+                        </td>
+                        <td>234</td>
+                        <td>12</td>
+                        <td>₹3,600</td>
+                        <td><span class="rate-badge excellent">5.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="link-info">
+                                <span class="link-name">Face Care - YouTube</span>
+                                <span class="link-type">Collection</span>
+                            </div>
+                        </td>
+                        <td>345</td>
+                        <td>9</td>
+                        <td>₹2,700</td>
+                        <td><span class="rate-badge average">2.6%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="top-products-section">
+        <h2>Top Selling Products</h2>
+        <div class="products-grid-stats">
+            <div class="product-stat-card">
+                <img src="{% static 'images/rose-water.jpg' %}" alt="Rose Water">
+                <h3>Pure Rose Water</h3>
+                <div class="product-stats">
+                    <span>28 sales</span>
+                    <span>₹5,400 revenue</span>
+                </div>
+            </div>
+
+            <div class="product-stat-card">
+                <img src="{% static 'images/sandalwood.jpg' %}" alt="Sandalwood">
+                <h3>Sandalwood Powder</h3>
+                <div class="product-stats">
+                    <span>16 sales</span>
+                    <span>₹3,200 revenue</span>
+                </div>
+            </div>
+
+            <div class="product-stat-card">
+                <img src="{% static 'images/charcoal.jpg' %}" alt="Charcoal">
+                <h3>Activated Charcoal</h3>
+                <div class="product-stats">
+                    <span>14 sales</span>
+                    <span>₹2,800 revenue</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Sample Chart.js implementation
+const earningsCtx = document.getElementById('earningsChart');
+const conversionCtx = document.getElementById('conversionChart');
+
+// You can implement actual charts here using Chart.js
+</script>
+{% endblock %}

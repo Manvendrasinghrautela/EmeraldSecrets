@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="affiliate-dashboard">
+    <h1>Affiliate Dashboard</h1>
+    <p class="dashboard-subtitle">Track your performance and earnings</p>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-change">+15.3%</div>
+            <div class="stat-label">Total Earnings</div>
+            <div class="stat-value">₹12,450</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">👁️</div>
+            <div class="stat-change">+8.2%</div>
+            <div class="stat-label">Total Clicks</div>
+            <div class="stat-value">1,234</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🛍️</div>
+            <div class="stat-change">+12.5%</div>
+            <div class="stat-label">Conversions</div>
+            <div class="stat-value">42</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🔗</div>
+            <div class="stat-change">+5.7%</div>
+            <div class="stat-label">Active Referrals</div>
+            <div class="stat-value">28</div>
+        </div>
+    </div>
+
+    <!-- Referral Link -->
+    <div class="referral-section">
+        <h2>Your Referral Link</h2>
+        <div class="referral-link-box">
+            <input type="text" value="https://emeraldsecrets.com/ref/ABC123" readonly>
+            <button class="copy-btn" onclick="copyToClipboard()">
+                <i class="fas fa-copy"></i> Copy Link
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard Tables -->
+    <div class="dashboard-tables">
+        <!-- Recent Sales -->
+        <div class="table-section">
+            <h2>Recent Sales</h2>
+            <div class="simple-list">
+                <div class="list-item">
+                    <span class="item-name">Pure Rose Water</span>
+                    <span class="item-value">+₹60</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Sandalwood Powder</span>
+                    <span class="item-value">+₹100</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Multani Mitti</span>
+                    <span class="item-value">+₹40</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Activated Charcoal</span>
+                    <span class="item-value">+₹70</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Pure Rose Water</span>
+                    <span class="item-value">+₹60</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="table-section">
+            <h2>Top Products</h2>
+            <div class="simple-list">
+                <div class="list-item">
+                    <span class="item-name">Pure Rose Water</span>
+                    <span class="item-value">₹5,400</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Sandalwood Powder</span>
+                    <span class="item-value">₹3,200</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Activated Charcoal</span>
+                    <span class="item-value">₹2,100</span>
+                </div>
+                <div class="list-item">
+                    <span class="item-name">Multani Mitti</span>
+                    <span class="item-value">₹1,750</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function copyToClipboard() {
+    const link = document.querySelector('.referral-link-box input');
+    link.select();
+    document.execCommand('copy');
+    alert('Referral link copied to clipboard!');
+}
+</script>
+{% endblock %}

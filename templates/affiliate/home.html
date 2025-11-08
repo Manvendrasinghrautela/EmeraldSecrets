@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="affiliate-hero">
+    <h1>Join Our Affiliate Program</h1>
+    <p>Earn generous commissions by sharing products you love. Help others discover natural beauty while building your income.</p>
+</section>
+
+<section class="why-join-section">
+    <h2>Why Join Our Program?</h2>
+    
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <div class="benefit-icon">📈</div>
+            <h3>High Commissions</h3>
+            <p>Earn up to 20% commission on every sale you refer. The more you share, the more you earn.</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">🎁</div>
+            <h3>Exclusive Perks</h3>
+            <p>Get access to exclusive discounts, early product launches, and special promotional materials.</p>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">👥</div>
+            <h3>Support & Tools</h3>
+            <p>Access marketing materials, tracking dashboard, and dedicated support to help you succeed.</p>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps-container">
+        <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>Sign Up</h3>
+                <p>Create your affiliate account in minutes. It's completely free to join.</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>Share Your Link</h3>
+                <p>Get your unique referral link and share it with your audience through social media, blog, or website.</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>Earn Commissions</h3>
+                <p>Earn money every time someone purchases through your link. Track your earnings in real-time.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="program-features">
+    <h2>Program Features</h2>
+    <div class="features-list">
+        <div class="feature-item">
+            <div class="feature-check">✓</div>
+            <p>30-day cookie duration for your referrals</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-check">✓</div>
+            <p>Real-time tracking and reporting dashboard</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-check">✓</div>
+            <p>Monthly payouts via bank transfer or UPI</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-check">✓</div>
+            <p>Dedicated affiliate support team</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-check">✓</div>
+            <p>Marketing materials and product images</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-check">✓</div>
+            <p>Exclusive promotional campaigns</p>
+        </div>
+    </div>
+</section>
+
+<section class="affiliate-cta">
+    <h2>Ready to Start Earning?</h2>
+    <p>Join thousands of affiliates who are already earning with Emerald Secrets.</p>
+    <a href="{% url 'affiliate:register' %}" class="btn btn-white">Create Your Account</a>
+</section>
+{% endblock %}

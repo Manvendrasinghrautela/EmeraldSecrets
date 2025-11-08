@@ -1,0 +1,205 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+
+<nav class="navbar">
+    <div class="navbar-container">
+        <!-- Logo -->
+        <div class="navbar-brand">
+            <a href="{% url 'products:home' %}" class="logo">
+                <span class="logo-icon">🌿</span>
+                <span class="logo-text">Emerald Secrets</span>
+            </a>
+        </div>
+
+        <!-- Hamburger Menu -->
+        <button class="hamburger" id="hamburgerMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Navigation Menu -->
+        <div class="nav-menu" id="navMenu">
+            <!-- Main Navigation -->
+            <ul class="nav-links">
+                <li><a href="{% url 'products:home' %}">Home</a></li>
+                <li><a href="{% url 'products:collection_list' %}">Collections</a></li>
+                <li><a href="{% url 'products:about' %}">About</a></li>
+                <li><a href="{% url 'products:contact' %}">Contact</a></li>
+                <li><a href="{% url 'affiliate:home' %}">Affiliate Program</a></li>
+            </ul>
+
+            <!-- Right Navigation -->
+            <div class="nav-right">
+                <button class="nav-icon search-toggle" id="searchToggle" title="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                
+                <a href="{% url 'accounts:profile' %}" class="nav-icon user-icon" title="Account">
+                    <i class="fas fa-user"></i>
+                </a>
+
+                <a href="{% url 'orders:cart' %}" class="nav-icon cart-icon" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Slide-in Search Bar -->
+<div class="search-slide" id="searchSlide">
+    <div class="search-content">
+        <form action="{% url 'products:search' %}" method="GET" class="search-form">
+            <input type="text" name="q" placeholder="Search for products..." class="search-input" autofocus>
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+        <button class="search-close" id="searchClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+
+<style>
+/* Search Slide Styles */
+.search-slide {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 20px 0;
+}
+
+.search-slide.active {
+    transform: translateY(0);
+}
+
+.search-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+}
+
+.search-form {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #2ecc71;
+}
+
+.search-btn {
+    padding: 14px 24px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #27ae60;
+}
+
+.search-close {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #666;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.search-close:hover {
+    background: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+}
+
+/* Adjust body padding when search is open */
+body.search-active {
+    padding-top: 80px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburgerMenu');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+    }
+
+    // Search Slide Toggle
+    const searchToggle = document.getElementById('searchToggle');
+    const searchSlide = document.getElementById('searchSlide');
+    const searchClose = document.getElementById('searchClose');
+    
+    if (searchToggle && searchSlide) {
+        searchToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchSlide.classList.add('active');
+            document.body.classList.add('search-active');
+            
+            // Focus on input after animation
+            setTimeout(() => {
+                const input = searchSlide.querySelector('.search-input');
+                if (input) input.focus();
+            }, 400);
+        });
+    }
+
+    if (searchClose && searchSlide) {
+        searchClose.addEventListener('click', function() {
+            searchSlide.classList.remove('active');
+            document.body.classList.remove('search-active');
+        });
+    }
+
+    // Close on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && searchSlide && searchSlide.classList.contains('active')) {
+            searchSlide.classList.remove('active');
+            document.body.classList.remove('search-active');
+        }
+    });
+});
+</script>

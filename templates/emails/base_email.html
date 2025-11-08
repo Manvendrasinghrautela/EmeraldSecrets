@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Emerald Secrets{% endblock %}</title>
+    <style>
+        /* Inline CSS for email compatibility */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #FAF8F5;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .email-header {
+            background-color: #2D7A6E;
+            padding: 30px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .email-logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .email-body {
+            padding: 40px;
+            color: #1A1A1A;
+            line-height: 1.7;
+        }
+
+        .email-body h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1A1A1A;
+        }
+
+        .email-body p {
+            margin-bottom: 15px;
+            font-size: 15px;
+            color: #4A4A4A;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: #2D7A6E;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .email-footer {
+            background-color: #8B6F47;
+            padding: 30px 40px;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
+        }
+
+        .social-links {
+            margin: 15px 0;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #E5E5E5;
+            margin: 25px 0;
+        }
+
+        .highlight-box {
+            background-color: #F5F3F1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2D7A6E;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <div class="email-logo">
+                <span>🌿</span>
+                <span>Emerald Secrets</span>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p><strong>Emerald Secrets</strong></p>
+            <p>Natural beauty products crafted with love and care</p>
+            
+            <div class="social-links">
+                <a href="#">Facebook</a> | 
+                <a href="#">Instagram</a> | 
+                <a href="#">Twitter</a>
+            </div>
+
+            <p style="margin-top: 20px; font-size: 12px;">
+                &copy; 2024 Emerald Secrets. All rights reserved.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

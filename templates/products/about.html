@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>About Emerald Secrets</h1>
+        <p>Discover our journey in the world of gemstones</p>
+    </div>
+</section>
+
+<section class="products-section">
+    <!-- Company Story -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-bottom: 4rem;">
+        <div>
+            <h2 style="font-size: 2.5rem; color: #2D5F3F; margin-bottom: 1.5rem;">Our Story</h2>
+            <p style="font-size: 1.125rem; line-height: 1.8; color: #6c757d; margin-bottom: 1.5rem;">
+                Founded in 2010, Emerald Secrets began as a small gemstone boutique with a passion for bringing the world's most beautiful stones to India. What started as a dream has evolved into a trusted name in the gemstone industry.
+            </p>
+            <p style="font-size: 1.125rem; line-height: 1.8; color: #6c757d; margin-bottom: 1.5rem;">
+                We believe that every gemstone has a story to tell. Our mission is to share these stories and connect people with stones that resonate with their soul and spirit.
+            </p>
+            <p style="font-size: 1.125rem; line-height: 1.8; color: #6c757d;">
+                Today, we're proud to serve thousands of customers across India, each one a part of our growing family.
+            </p>
+        </div>
+        <div style="height: 400px; border-radius: 12px; overflow: hidden; background-color: #f8f9fa;">
+            <img src="{% static 'images/about-store.jpg' %}" alt="Our Store" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 4rem;">
+        <div style="background: linear-gradient(135deg, #2D5F3F 0%, #4A7C59 100%); color: white; padding: 3rem; border-radius: 12px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Our Mission</h3>
+            <p style="font-size: 1.125rem; line-height: 1.8; opacity: 0.95;">
+                To provide authentic, ethically sourced gemstones that bring joy, beauty, and positive energy to our customers' lives.
+            </p>
+        </div>
+        <div style="background: linear-gradient(135deg, #D4AF37 0%, #F0C158 100%); color: #2D5F3F; padding: 3rem; border-radius: 12px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Our Vision</h3>
+            <p style="font-size: 1.125rem; line-height: 1.8;">
+                To become India's most trusted gemstone retailer, known for our quality, authenticity, and exceptional customer service.
+            </p>
+        </div>
+    </div>
+
+    <!-- Values -->
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 2.5rem; color: #2D5F3F; margin-bottom: 3rem;">Our Core Values</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            <div style="padding: 2rem; background-color: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 3rem; color: #2D5F3F; margin-bottom: 1rem;">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Authenticity</h3>
+                <p style="color: #6c757d;">Every gemstone is verified and comes with authentic certificates.</p>
+            </div>
+
+            <div style="padding: 2rem; background-color: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 3rem; color: #2D5F3F; margin-bottom: 1rem;">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Trust</h3>
+                <p style="color: #6c757d;">We build lasting relationships with our customers through transparency and integrity.</p>
+            </div>
+
+            <div style="padding: 2rem; background-color: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 3rem; color: #2D5F3F; margin-bottom: 1rem;">
+                    <i class="fas fa-earth-americas"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Sustainability</h3>
+                <p style="color: #6c757d;">We source our gemstones responsibly and ethically.</p>
+            </div>
+
+            <div style="padding: 2rem; background-color: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 3rem; color: #2D5F3F; margin-bottom: 1rem;">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Excellence</h3>
+                <p style="color: #6c757d;">We strive for the highest quality in every aspect of our business.</p>
+            </div>
+
+            <div style="padding: 2rem; background-color: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 3rem; color: #2D5F3F; margin-bottom: 1rem;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Community</h3>
+                <p style="color: #6c757d;">We believe in giving back and supporting our local communities.</p>
+            </div>
+
+            <div style="padding: 2rem; background-color: #f8f9fa; border-radius: 12px;">
+                <div style="font-size: 3rem; color: #2D5F3F; margin-bottom: 1rem;">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Passion</h3>
+                <p style="color: #6c757d;">We are passionate about gemstones and sharing their beauty with the world.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team -->
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 2.5rem; color: #2D5F3F; margin-bottom: 3rem;">Our Team</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="height: 300px; background-color: #f8f9fa;"></div>
+                <div style="padding: 2rem;">
+                    <h3 style="margin-bottom: 0.5rem;">Rajesh Kumar</h3>
+                    <p style="color: #2D5F3F; font-weight: 600; margin-bottom: 0.75rem;">Founder & CEO</p>
+                    <p style="color: #6c757d; font-size: 0.875rem;">20+ years of experience in the gemstone industry</p>
+                </div>
+            </div>
+
+            <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="height: 300px; background-color: #f8f9fa;"></div>
+                <div style="padding: 2rem;">
+                    <h3 style="margin-bottom: 0.5rem;">Priya Sharma</h3>
+                    <p style="color: #2D5F3F; font-weight: 600; margin-bottom: 0.75rem;">Head of Quality</p>
+                    <p style="color: #6c757d; font-size: 0.875rem;">Expert gemologist with international certifications</p>
+                </div>
+            </div>
+
+            <div style="background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="height: 300px; background-color: #f8f9fa;"></div>
+                <div style="padding: 2rem;">
+                    <h3 style="margin-bottom: 0.5rem;">Amit Singh</h3>
+                    <p style="color: #2D5F3F; font-weight: 600; margin-bottom: 0.75rem;">Head of Operations</p>
+                    <p style="color: #6c757d; font-size: 0.875rem;">Ensures smooth operations and customer satisfaction</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div style="background: linear-gradient(135deg, #2D5F3F 0%, #4A7C59 100%); color: white; padding: 4rem 2rem; border-radius: 12px; margin-bottom: 4rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;">
+            <div>
+                <div style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">10,000+</div>
+                <p style="font-size: 1.125rem; opacity: 0.9;">Happy Customers</p>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">50,000+</div>
+                <p style="font-size: 1.125rem; opacity: 0.9;">Gemstones in Stock</p>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">15+</div>
+                <p style="font-size: 1.125rem; opacity: 0.9;">Years of Service</p>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 700; margin-bottom: 0.5rem;">100%</div>
+                <p style="font-size: 1.125rem; opacity: 0.9;">Authentic Products</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div style="text-align: center;">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Ready to Explore Our Collection?</h2>
+        <p style="font-size: 1.125rem; color: #6c757d; margin-bottom: 2rem;">Discover the perfect gemstone for you today</p>
+        <a href="{% url 'products:product_list' %}" class="btn btn-primary" style="padding: 1.25rem 2rem; font-size: 1.125rem;">Shop Now</a>
+    </div>
+</section>
+
+{% endblock %}

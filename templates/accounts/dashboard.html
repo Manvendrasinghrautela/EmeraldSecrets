@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="account-section">
+    <h1>My Account</h1>
+    
+    <div class="account-layout">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <a href="{% url 'accounts:order_list' %}" class="sidebar-link active">
+                <i class="fas fa-box"></i> My Orders
+            </a>
+            <a href="{% url 'accounts:wishlist' %}" class="sidebar-link">
+                <i class="far fa-heart"></i> Wishlist
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="sidebar-link">
+                <i class="fas fa-user"></i> Profile Info
+            </a>
+            <a href="{% url 'accounts:settings' %}" class="sidebar-link">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="account-main">
+            <h2>My Orders</h2>
+            
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <h3>Order #{{ order.id }}</h3>
+                        <p>Placed on {{ order.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    <span class="order-status delivered">Delivered</span>
+                </div>
+                <div class="order-body">
+                    <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}">
+                    <div class="order-details">
+                        <h4>{{ order.product.name }}</h4>
+                        <p>Quantity: {{ order.quantity }}</p>
+                    </div>
+                    <div class="order-price">₹{{ order.total }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="affiliate-dashboard">
+    <div class="page-header">
+        <h1>Withdrawals & Payouts</h1>
+        <button class="btn btn-primary" data-modal="requestWithdrawal">
+            <i class="fas fa-money-bill-wave"></i> Request Withdrawal
+        </button>
+    </div>
+
+    <!-- Balance Overview -->
+    <div class="balance-overview">
+        <div class="balance-card">
+            <div class="balance-icon available">💰</div>
+            <div class="balance-info">
+                <span class="balance-label">Available Balance</span>
+                <span class="balance-amount">₹8,450</span>
+                <span class="balance-note">Ready to withdraw</span>
+            </div>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-icon pending">⏳</div>
+            <div class="balance-info">
+                <span class="balance-label">Pending Balance</span>
+                <span class="balance-amount">₹4,000</span>
+                <span class="balance-note">Processing from recent sales</span>
+            </div>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-icon total">💵</div>
+            <div class="balance-info">
+                <span class="balance-label">Total Withdrawn</span>
+                <span class="balance-amount">₹25,300</span>
+                <span class="balance-note">Lifetime earnings</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Withdrawal Form -->
+    <div class="withdrawal-form-section">
+        <h2>Request New Withdrawal</h2>
+        <form method="post" class="withdrawal-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Withdrawal Amount</label>
+                <div class="amount-input-wrapper">
+                    <span class="currency-symbol">₹</span>
+                    <input type="number" name="amount" min="1000" max="8450" placeholder="Enter amount" required>
+                </div>
+                <small class="form-hint">Minimum withdrawal: ₹1,000 | Available: ₹8,450</small>
+            </div>
+
+            <div class="form-group">
+                <label>Payment Method</label>
+                <div class="payment-methods">
+                    <div class="payment-option">
+                        <input type="radio" id="bank" name="payment_method" value="bank" checked>
+                        <label for="bank">
+                            <i class="fas fa-university"></i>
+                            <span>Bank Transfer</span>
+                            <small>Account: ****5678</small>
+                        </label>
+                    </div>
+                    <div class="payment-option">
+                        <input type="radio" id="upi" name="payment_method" value="upi">
+                        <label for="upi">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>UPI</span>
+                            <small>user@upi</small>
+                        </label>
+                    </div>
+                </div>
+                <a href="{% url 'affiliate:settings' %}" class="link-small">Update payment information</a>
+            </div>
+
+            <div class="withdrawal-note">
+                <i class="fas fa-info-circle"></i>
+                <p>Withdrawals are processed within 5-7 business days. You'll receive a confirmation email once your request is approved.</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large">Submit Withdrawal Request</button>
+        </form>
+    </div>
+
+    <!-- Withdrawal History -->
+    <div class="withdrawal-history-section">
+        <h2>Withdrawal History</h2>
+
+        <div class="withdrawal-list">
+            <div class="withdrawal-item completed">
+                <div class="withdrawal-icon">✓</div>
+                <div class="withdrawal-details">
+                    <span class="withdrawal-amount">₹5,000</span>
+                    <span class="withdrawal-method">Bank Transfer</span>
+                    <span class="withdrawal-date">Oct 25, 2024</span>
+                </div>
+                <div class="withdrawal-status">
+                    <span class="status-badge completed">Completed</span>
+                    <span class="transaction-id">TXN-12345</span>
+                </div>
+            </div>
+
+            <div class="withdrawal-item completed">
+                <div class="withdrawal-icon">✓</div>
+                <div class="withdrawal-details">
+                    <span class="withdrawal-amount">₹8,000</span>
+                    <span class="withdrawal-method">UPI</span>
+                    <span class="withdrawal-date">Sep 28, 2024</span>
+                </div>
+                <div class="withdrawal-status">
+                    <span class="status-badge completed">Completed</span>
+                    <span class="transaction-id">TXN-12344</span>
+                </div>
+            </div>
+
+            <div class="withdrawal-item processing">
+                <div class="withdrawal-icon">⏳</div>
+                <div class="withdrawal-details">
+                    <span class="withdrawal-amount">₹6,000</span>
+                    <span class="withdrawal-method">Bank Transfer</span>
+                    <span class="withdrawal-date">Nov 2, 2024</span>
+                </div>
+                <div class="withdrawal-status">
+                    <span class="status-badge processing">Processing</span>
+                    <span class="transaction-id">TXN-12346</span>
+                </div>
+            </div>
+
+            <div class="withdrawal-item completed">
+                <div class="withdrawal-icon">✓</div>
+                <div class="withdrawal-details">
+                    <span class="withdrawal-amount">₹6,300</span>
+                    <span class="withdrawal-method">Bank Transfer</span>
+                    <span class="withdrawal-date">Aug 15, 2024</span>
+                </div>
+                <div class="withdrawal-status">
+                    <span class="status-badge completed">Completed</span>
+                    <span class="transaction-id">TXN-12343</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

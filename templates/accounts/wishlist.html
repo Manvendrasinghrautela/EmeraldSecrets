@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="account-section">
+    <h1>My Account</h1>
+    
+    <div class="account-layout">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <a href="{% url 'accounts:order_list' %}" class="sidebar-link">
+                <i class="fas fa-box"></i> My Orders
+            </a>
+            <a href="{% url 'accounts:wishlist' %}" class="sidebar-link active">
+                <i class="far fa-heart"></i> Wishlist
+            </a>
+            <a href="{% url 'accounts:address_list' %}" class="sidebar-link">
+                <i class="fas fa-map-marker-alt"></i> Addresses
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="sidebar-link">
+                <i class="fas fa-user"></i> Profile Info
+            </a>
+            <a href="{% url 'accounts:settings' %}" class="sidebar-link">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="account-main">
+            <div class="page-header">
+                <h2>My Wishlist</h2>
+                <span class="item-count">{{ wishlist_items.count }} item{{ wishlist_items.count|pluralize }}</span>
+            </div>
+
+            {% if wishlist_items %}
+            <div class="wishlist-grid">
+                {% for item in wishlist_items %}
+                <div class="wishlist-card">
+                    <div class="wishlist-image">
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        <form method="post" action="{% url 'accounts:wishlist_remove' item.id %}" class="remove-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove" title="Remove from wishlist">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="wishlist-info">
+                        <h3>{{ item.product.name }}</h3>
+                        <p class="wishlist-description">{{ item.product.description|truncatewords:15 }}</p>
+                        
+                        <div class="wishlist-footer">
+                            <div class="wishlist-price">
+                                <span class="current-price">₹{{ item.product.price }}</span>
+                                {% if item.product.original_price %}
+                                <span class="original-price">₹{{ item.product.original_price }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="wishlist-actions">
+                                <form method="post" action="{% url 'orders:add_to_cart' item.product.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {% if item.product.in_stock %}
+                        <p class="stock-status in-stock">
+                            <i class="fas fa-check-circle"></i> In Stock
+                        </p>
+                        {% else %}
+                        <p class="stock-status out-of-stock">
+                            <i class="fas fa-times-circle"></i> Out of Stock
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="far fa-heart"></i>
+                <h3>Your Wishlist is Empty</h3>
+                <p>Save your favorite products here to easily find them later.</p>
+                <a href="{% url 'products:product_list' %}" class="btn btn-primary">Browse Products</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<script>
+function toggleWishlist(productId, button) {
+    fetch(`/products/wishlist/toggle/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.added) {
+            button.classList.add('active');
+            button.innerHTML = '<i class="fas fa-heart"></i>';
+        } else {
+            button.classList.remove('active');
+            button.innerHTML = '<i class="far fa-heart"></i>';
+        }
+        alert(data.message);
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

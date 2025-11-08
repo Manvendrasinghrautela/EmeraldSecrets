@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="account-section">
+    <h1>My Account</h1>
+    
+    <div class="account-layout">
+        <!-- Sidebar -->
+        <aside class="account-sidebar">
+            <a href="{% url 'accounts:order_list' %}" class="sidebar-link">
+                <i class="fas fa-box"></i> My Orders
+            </a>
+            <a href="{% url 'accounts:wishlist' %}" class="sidebar-link">
+                <i class="far fa-heart"></i> Wishlist
+            </a>
+            <a href="{% url 'accounts:address_list' %}" class="sidebar-link active">
+                <i class="fas fa-map-marker-alt"></i> Addresses
+            </a>
+            <a href="{% url 'accounts:profile' %}" class="sidebar-link">
+                <i class="fas fa-user"></i> Profile Info
+            </a>
+            <a href="{% url 'accounts:settings' %}" class="sidebar-link">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="account-main">
+            <div class="page-header">
+                <h2>{% if address %}Edit Address{% else %}Add New Address{% endif %}</h2>
+                <a href="{% url 'accounts:address_list' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back to Addresses
+                </a>
+            </div>
+
+            <form method="post" class="address-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="address_type">Address Type</label>
+                    <select id="address_type" name="address_type" required>
+                        <option value="home" {% if address.address_type == 'home' %}selected{% endif %}>Home</option>
+                        <option value="work" {% if address.address_type == 'work' %}selected{% endif %}>Work</option>
+                        <option value="other" {% if address.address_type == 'other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ address.first_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ address.last_name }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" value="{{ address.phone }}" placeholder="+91 98765 43210" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address_line1">Address Line 1</label>
+                    <input type="text" id="address_line1" name="address_line1" value="{{ address.address_line1 }}" placeholder="House/Flat No., Building Name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address_line2">Address Line 2</label>
+                    <input type="text" id="address_line2" name="address_line2" value="{{ address.address_line2 }}" placeholder="Street, Area, Locality">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" value="{{ address.city }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" value="{{ address.state }}" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="postal_code">Postal Code</label>
+                        <input type="text" id="postal_code" name="postal_code" value="{{ address.postal_code }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" name="country" value="{{ address.country|default:'India' }}" required>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="is_default" name="is_default" {% if address.is_default %}checked{% endif %}>
+                    <label for="is_default">Set as default address</label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Address</button>
+                    <a href="{% url 'accounts:address_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
