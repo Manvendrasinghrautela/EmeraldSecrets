@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-change-this')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,3.27.192.130, emeraldsecrets.com').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -115,10 +115,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Security (add these)
+SECURE_SSL_REDIRECT = False  # Set True if using HTTPS
+SESSION_COOKIE_SECURE = False  # Set True if using HTTPS
+CSRF_COOKIE_SECURE = False  # Set True if using HTTPS
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'

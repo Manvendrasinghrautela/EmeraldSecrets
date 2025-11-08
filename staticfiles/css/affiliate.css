@@ -340,6 +340,738 @@
     font-weight: 700;
 }
 
+/* ===============================================================
+   ADDITIONAL AFFILIATE.CSS - Settings, Links, Join, Profile, Stats, Withdrawals
+   =============================================================== */
+
+/* Settings Container */
+.settings-container {
+  display: grid;
+  gap: 2rem;
+}
+
+.settings-card {
+  background-color: white;
+  padding: 3rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.settings-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-card h2 i {
+  color: var(--primary-green);
+}
+
+.settings-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.settings-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.settings-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.settings-form input,
+.settings-form select {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.settings-form input:focus,
+.settings-form select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.form-hint {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-gray);
+  margin-top: 0.5rem;
+}
+
+/* Links Page */
+.create-link-section {
+  background-color: white;
+  padding: 3rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 3rem;
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.link-card {
+  background-color: white;
+  border: 1px solid #E5E5E5;
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  transition: var(--transition);
+}
+
+.link-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.link-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.link-type-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.link-type-badge.general {
+  background-color: #D1ECF1;
+  color: #0C5460;
+}
+
+.link-type-badge.product {
+  background-color: #D4EDDA;
+  color: #155724;
+}
+
+.link-type-badge.collection {
+  background-color: #FFF3CD;
+  color: #856404;
+}
+
+.link-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.link-url-box {
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--light-bg);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.link-url-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+}
+
+.link-created {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+/* Join Page */
+.join-hero {
+  background: linear-gradient(135deg, var(--cream-bg) 0%, var(--light-bg) 100%);
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.join-form-section {
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+}
+
+.join-form-container {
+  background-color: white;
+  padding: 3rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.form-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.form-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary-green);
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.btn-large {
+  padding: 1.25rem 3rem;
+  font-size: 1.125rem;
+}
+
+.join-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.info-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.info-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-card li {
+  padding: 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.info-card li i {
+  color: var(--primary-green);
+}
+
+/* Profile Page */
+.profile-container {
+  display: grid;
+  gap: 3rem;
+}
+
+.profile-card {
+  background-color: white;
+  padding: 3rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.profile-header {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background-color: var(--primary-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 3rem;
+}
+
+.profile-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.profile-badge.active {
+  background-color: #D4EDDA;
+  color: #155724;
+}
+
+.profile-stats-mini {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #E5E5E5;
+}
+
+.mini-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mini-stat-label {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.mini-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.detail-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.detail-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: var(--text-gray);
+}
+
+.detail-value {
+  font-weight: 600;
+}
+
+.tier-progress {
+  padding: 1.5rem;
+  background-color: var(--light-bg);
+  border-radius: 8px;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #E5E5E5;
+  border-radius: 4px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary-green);
+  transition: width 0.3s;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.overview-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--light-bg);
+  border-radius: 8px;
+}
+
+.overview-card i {
+  font-size: 2rem;
+  color: var(--primary-green);
+}
+
+.overview-value {
+  font-size: 2rem;
+  font-weight: 700;
+  display: block;
+}
+
+.overview-label {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+/* Stats Page */
+.date-filter select {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.chart-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.chart-placeholder {
+  height: 300px;
+}
+
+.performance-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.performance-table th,
+.performance-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.performance-table th {
+  background-color: var(--light-bg);
+  font-weight: 600;
+}
+
+.rate-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.rate-badge.excellent {
+  background-color: #D4EDDA;
+  color: #155724;
+}
+
+.rate-badge.good {
+  background-color: #D1ECF1;
+  color: #0C5460;
+}
+
+.rate-badge.average {
+  background-color: #FFF3CD;
+  color: #856404;
+}
+
+.products-grid-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.product-stat-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.product-stat-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-stat-card h3 {
+  padding: 1rem;
+  font-size: 1.125rem;
+}
+
+.product-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  background-color: var(--light-bg);
+  font-size: 0.875rem;
+}
+
+/* Withdrawals Page */
+.balance-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.balance-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 1.5rem;
+}
+
+.balance-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.balance-icon.available {
+  background-color: #D4EDDA;
+}
+
+.balance-icon.pending {
+  background-color: #FFF3CD;
+}
+
+.balance-icon.total {
+  background-color: #D1ECF1;
+}
+
+.balance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.balance-label {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.balance-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.balance-note {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.withdrawal-form-section {
+  background-color: white;
+  padding: 3rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 3rem;
+}
+
+.amount-input-wrapper {
+  position: relative;
+}
+
+.currency-symbol {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 600;
+  color: var(--text-gray);
+}
+
+.amount-input-wrapper input {
+  padding-left: 2.5rem;
+}
+
+.payment-methods {
+  display: grid;
+  gap: 1rem;
+}
+
+.payment-option {
+  position: relative;
+}
+
+.payment-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.payment-option label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px solid #E5E5E5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.payment-option input[type="radio"]:checked + label {
+  border-color: var(--primary-green);
+  background-color: #F0F9F8;
+}
+
+.payment-option label i {
+  font-size: 1.5rem;
+  color: var(--primary-green);
+}
+
+.withdrawal-note {
+  background-color: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.withdrawal-note i {
+  color: var(--primary-green);
+  font-size: 1.25rem;
+}
+
+.withdrawal-list {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.withdrawal-item {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.withdrawal-item:last-child {
+  border-bottom: none;
+}
+
+.withdrawal-icon {
+  width: 50px;
+  height: 50px;
+  background-color: var(--light-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.withdrawal-item.completed .withdrawal-icon {
+  background-color: #D4EDDA;
+  color: #155724;
+}
+
+.withdrawal-item.processing .withdrawal-icon {
+  background-color: #FFF3CD;
+  color: #856404;
+}
+
+.withdrawal-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.withdrawal-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.withdrawal-method,
+.withdrawal-date {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.withdrawal-status {
+  text-align: right;
+}
+
+.status-badge {
+  display: block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.status-badge.completed {
+  background-color: #D4EDDA;
+  color: #155724;
+}
+
+.status-badge.processing {
+  background-color: #FFF3CD;
+  color: #856404;
+}
+
+.transaction-id {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .join-form-section {
+      grid-template-columns: 1fr;
+  }
+
+  .charts-section {
+      grid-template-columns: 1fr;
+  }
+
+  .withdrawal-item {
+      flex-direction: column;
+      text-align: center;
+  }
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
     .affiliate-hero h1 {
