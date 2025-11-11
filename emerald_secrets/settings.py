@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-change-this')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,3.27.192.130, emeraldsecrets.com').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,43.220.4.22,emeraldsecrets.com,www.emeraldsecrets.com').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('MYSQL_DATABASE', 'emeraldsecrets'),
         'USER': os.getenv('MYSQL_USER', 'emerald_user'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'Kulsm19cphantom@'),
         'HOST': os.getenv('MYSQL_HOST', 'localhost'),
         'PORT': os.getenv('MYSQL_PORT', '3306'),
         'OPTIONS': {
