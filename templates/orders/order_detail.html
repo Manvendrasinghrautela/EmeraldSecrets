@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="order-detail-section">
+    <div class="order-detail-container">
+        <div class="order-header">
+            <div>
+                <h1>Order #{{ order.order_number }}</h1>
+                <p class="order-date">Placed on {{ order.created_at|date:"M d, Y at g:i A" }}</p>
+            </div>
+            <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+
+        <!-- Order Progress -->
+        <div class="order-progress">
+            <div class="progress-step {% if order.status == 'pending' or order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
+                <div class="step-icon">✓</div>
+                <div class="step-label">Order Placed</div>
+            </div>
+            <div class="progress-line {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}"></div>
+            <div class="progress-step {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
+                <div class="step-icon">📦</div>
+                <div class="step-label">Processing</div>
+            </div>
+            <div class="progress-line {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}"></div>
+            <div class="progress-step {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
+                <div class="step-icon">🚚</div>
+                <div class="step-label">Shipped</div>
+            </div>
+            <div class="progress-line {% if order.status == 'delivered' %}active{% endif %}"></div>
+            <div class="progress-step {% if order.status == 'delivered' %}active{% endif %}">
+                <div class="step-icon">✓</div>
+                <div class="step-label">Delivered</div>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="order-items-section">
+            <h2>Order Items</h2>
+            {% for item in order_items %}
+            <div class="order-item">
+                {% if item.product and item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product_name }}">
+                {% endif %}
+                <div class="item-info">
+                    <h3>{{ item.product_name }}</h3>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p class="item-price">₹{{ item.price }} × {{ item.quantity }} = ₹{{ item.total_price }}</p>
+                </div>
+                <div class="item-total">₹{{ item.total_price }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Order Summary & Address -->
+        <div class="order-bottom-section">
+            <div class="shipping-address">
+                <h2>Shipping Address</h2>
+                <div class="address-box">
+                    <p><strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong></p>
+                    <p>{{ order.shipping_address_line1 }}</p>
+                    {% if order.shipping_address_line2 %}
+                    <p>{{ order.shipping_address_line2 }}</p>
+                    {% endif %}
+                    <p>{{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_postal_code }}</p>
+                    <p>{{ order.shipping_country }}</p>
+                    <p>Phone: {{ order.shipping_phone }}</p>
+                    <p>Email: {{ order.shipping_email }}</p>
+                </div>
+            </div>
+
+            <div class="order-summary-box">
+                <h2>Order Summary</h2>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₹{{ order.subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>₹{{ order.shipping_cost|floatformat:2 }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>₹{{ order.tax|floatformat:2 }}</span>
+                </div>
+                {% if order.discount %}
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span>-₹{{ order.discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>₹{{ order.total|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        {% if payments %}
+        <div class="payment-info">
+            <h2>Payment Information</h2>
+            {% for payment in payments %}
+            <div class="payment-details">
+                <p><strong>Payment Method:</strong> {{ payment.get_payment_method_display }}</p>
+                <p><strong>Status:</strong> {{ payment.get_payment_status_display }}</p>
+                <p><strong>Amount:</strong> ₹{{ payment.amount|floatformat:2 }}</p>
+                {% if payment.transaction_id %}
+                <p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="order-actions">
+            <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Back to Orders</a>
+            {% if order.status != 'cancelled' %}
+            <a href="{% url 'orders:download_invoice' order.id %}" class="btn btn-outline">Download Invoice</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+

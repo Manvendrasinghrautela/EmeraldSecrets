@@ -36,7 +36,6 @@ class UserProfile(models.Model):
 
 
 class Address(models.Model):
-    """User Shipping/Billing Addresses"""
     ADDRESS_TYPES = [
         ('shipping', 'Shipping'),
         ('billing', 'Billing'),
@@ -46,20 +45,19 @@ class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
     address_type = models.CharField(max_length=10, choices=ADDRESS_TYPES, default='both')
     
-    # Address fields
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15)
-    email = models.EmailField()
+    # Make ALL fields optional (blank=True)
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
+    phone = models.CharField(max_length=15, blank=True)
+    email = models.EmailField(blank=True)
     
-    address_line1 = models.CharField(max_length=255)
+    address_line1 = models.CharField(max_length=255, blank=True)
     address_line2 = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=10)
-    country = models.CharField(max_length=100, default='India')
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    postal_code = models.CharField(max_length=10, blank=True)
+    country = models.CharField(max_length=100, default='India', blank=True)
     
-    # Status
     is_default = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     
@@ -74,7 +72,6 @@ class Address(models.Model):
         return f"{self.first_name} {self.last_name} - {self.city}"
 
     def save(self, *args, **kwargs):
-        # If this address is set as default, unset other default addresses
         if self.is_default:
             Address.objects.filter(user=self.user, is_default=True).update(is_default=False)
         super().save(*args, **kwargs)

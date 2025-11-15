@@ -41,60 +41,112 @@
             <form method="post" class="address-form">
                 {% csrf_token %}
                 
+                <!-- Display form errors -->
+                {% if form.errors %}
+                <div class="form-errors" style="background: #fee; padding: 12px; border-radius: 4px; margin-bottom: 15px; border-left: 4px solid #c33;">
+                    <strong>Please correct the following errors:</strong>
+                    <ul style="margin: 8px 0 0 20px; padding: 0;">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li style="color: #c33; margin: 4px 0;">{{ field|title }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
                 <div class="form-group">
                     <label for="address_type">Address Type</label>
                     <select id="address_type" name="address_type" required>
-                        <option value="home" {% if address.address_type == 'home' %}selected{% endif %}>Home</option>
-                        <option value="work" {% if address.address_type == 'work' %}selected{% endif %}>Work</option>
-                        <option value="other" {% if address.address_type == 'other' %}selected{% endif %}>Other</option>
+                        <option value="shipping" {% if form.address_type.value == 'shipping' or address.address_type == 'shipping' %}selected{% endif %}>Shipping</option>
+                        <option value="billing" {% if form.address_type.value == 'billing' or address.address_type == 'billing' %}selected{% endif %}>Billing</option>
+                        <option value="both" {% if form.address_type.value == 'both' or address.address_type == 'both' or not address %}selected{% endif %}>Both</option>
                     </select>
+                    {% if form.address_type.errors %}
+                        <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.address_type.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="first_name">First Name</label>
-                        <input type="text" id="first_name" name="first_name" value="{{ address.first_name }}" required>
+                        <input type="text" id="first_name" name="first_name" value="{% if form.first_name.value %}{{ form.first_name.value }}{% elif address %}{{ address.first_name }}{% endif %}" required>
+                        {% if form.first_name.errors %}
+                            <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.first_name.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="last_name">Last Name</label>
-                        <input type="text" id="last_name" name="last_name" value="{{ address.last_name }}" required>
+                        <input type="text" id="last_name" name="last_name" value="{% if form.last_name.value %}{{ form.last_name.value }}{% elif address %}{{ address.last_name }}{% endif %}" required>
+                        {% if form.last_name.errors %}
+                            <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" value="{{ address.phone }}" placeholder="+91 98765 43210" required>
+                    <input type="tel" id="phone" name="phone" value="{% if form.phone.value %}{{ form.phone.value }}{% elif address %}{{ address.phone }}{% endif %}" placeholder="Phone Number" required>
+                    {% if form.phone.errors %}
+                        <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.phone.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{% if form.email.value %}{{ form.email.value }}{% elif address %}{{ address.email }}{% elif request.user.email %}{{ request.user.email }}{% endif %}" placeholder="Email Address" required>
+                    {% if form.email.errors %}
+                        <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.email.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="address_line1">Address Line 1</label>
-                    <input type="text" id="address_line1" name="address_line1" value="{{ address.address_line1 }}" placeholder="House/Flat No., Building Name" required>
+                    <input type="text" id="address_line1" name="address_line1" value="{% if form.address_line1.value %}{{ form.address_line1.value }}{% elif address %}{{ address.address_line1 }}{% endif %}" placeholder="House/Flat No., Building Name" required>
+                    {% if form.address_line1.errors %}
+                        <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.address_line1.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label for="address_line2">Address Line 2</label>
-                    <input type="text" id="address_line2" name="address_line2" value="{{ address.address_line2 }}" placeholder="Street, Area, Locality">
+                    <input type="text" id="address_line2" name="address_line2" value="{% if form.address_line2.value %}{{ form.address_line2.value }}{% elif address %}{{ address.address_line2 }}{% endif %}" placeholder="Street, Area, Locality (optional)">
+                    {% if form.address_line2.errors %}
+                        <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.address_line2.errors.0 }}</div>
+                    {% endif %}
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="city">City</label>
-                        <input type="text" id="city" name="city" value="{{ address.city }}" required>
+                        <input type="text" id="city" name="city" value="{% if form.city.value %}{{ form.city.value }}{% elif address %}{{ address.city }}{% endif %}" required>
+                        {% if form.city.errors %}
+                            <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.city.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="state">State</label>
-                        <input type="text" id="state" name="state" value="{{ address.state }}" required>
+                        <input type="text" id="state" name="state" value="{% if form.state.value %}{{ form.state.value }}{% elif address %}{{ address.state }}{% endif %}" required>
+                        {% if form.state.errors %}
+                            <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.state.errors.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="postal_code">Postal Code</label>
-                        <input type="text" id="postal_code" name="postal_code" value="{{ address.postal_code }}" required>
+                        <input type="text" id="postal_code" name="postal_code" value="{% if form.postal_code.value %}{{ form.postal_code.value }}{% elif address %}{{ address.postal_code }}{% endif %}" placeholder="Postal Code / PIN Code" required>
+                        {% if form.postal_code.errors %}
+                            <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.postal_code.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     <div class="form-group">
                         <label for="country">Country</label>
-                        <input type="text" id="country" name="country" value="{{ address.country|default:'India' }}" required>
+                        <input type="text" id="country" name="country" value="{% if form.country.value %}{{ form.country.value }}{% elif address %}{{ address.country }}{% else %}India{% endif %}" required>
+                        {% if form.country.errors %}
+                            <div style="color: #c33; font-size: 12px; margin-top: 4px;">{{ form.country.errors.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
 

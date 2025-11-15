@@ -249,13 +249,11 @@ def checkout(request):
             }
             return render(request, 'orders/checkout.html', context)
         
-        # Validate it's a positive integer
+        # Convert to integer and validate
         try:
             address_id = int(address_id)
-            if address_id <= 0:
-                raise ValueError("ID must be positive")
         except (ValueError, TypeError):
-            messages.error(request, 'Invalid address selected. Please try again.')
+            messages.error(request, 'Invalid address format. Please select a valid address.')
             context = {
                 'cart': cart,
                 'cart_items': cart_items,
@@ -282,6 +280,22 @@ def checkout(request):
                 'total': cart.total,
             }
             return render(request, 'orders/checkout.html', context)
+
+        # Get address and verify ownership
+        try:
+            address = Address.objects.get(id=address_id, user=request.user, is_active=True)
+        except Address.DoesNotExist:
+            messages.error(request, 'Selected address not found. Please choose a valid address.')
+            context = {
+                'cart': cart,
+                'cart_items': cart_items,
+                'addresses': addresses,
+                'subtotal': cart.subtotal,
+                'shipping': Decimal("50") if cart.subtotal < Decimal("500") else Decimal("0"),
+                'tax': cart.subtotal * Decimal("0.0665"),
+                'total': cart.total,
+            }
+            return render(request, 'orders/checkout.html', context)        
         
         # ====== CALCULATE TOTALS ======
         shipping_cost = Decimal("50") if cart.subtotal < Decimal("500") else Decimal("0")

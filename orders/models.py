@@ -235,6 +235,9 @@ class OrderItem(models.Model):
 
     @property
     def total_price(self):
+        """Calculate total price, handling None values"""
+        if self.price is None or self.quantity is None:
+            return Decimal('0.00')
         return self.price * self.quantity
 
 

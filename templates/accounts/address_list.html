@@ -33,7 +33,7 @@
         <div class="account-main">
             <div class="page-header">
                 <h2>My Addresses</h2>
-                <a href="{% url 'accounts:address_add' %}" class="btn btn-primary">
+                <a href="{% url 'accounts:add_address' %}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Add New Address
                 </a>
             </div>
@@ -84,7 +84,7 @@
                 <i class="fas fa-map-marker-alt"></i>
                 <h3>No Addresses Found</h3>
                 <p>You haven't added any addresses yet.</p>
-                <a href="{% url 'accounts:address_add' %}" class="btn btn-primary">Add Your First Address</a>
+                <a href="{% url 'accounts:add_address' %}" class="btn btn-primary">Add Your First Address</a>
             </div>
             {% endif %}
         </div>

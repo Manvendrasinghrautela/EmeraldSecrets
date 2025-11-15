@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q, Avg
+from django.db.models import Q, Avg, Count
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .models import (
@@ -125,9 +125,18 @@ def product_detail(request, slug):
     ).exclude(id=product.id)[:4]
     
     # Get product reviews
-    reviews = product.reviews.filter(is_approved=True).order_by('-created_at')
+    reviews = product.reviews.filter(is_approved=True).select_related('user').order_by('-created_at')
+    review_stats = reviews.aggregate(
+        average_rating=Avg('rating'),
+        review_count=Count('id')
+    )
     average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
     review_count = reviews.count()
+
+    related_products = Product.objects.filter(
+        category=product.category,
+        is_active=True
+    ).exclude(id=product.id)[:4]
     
     # Check if user has wishlisted this product
     is_wishlist = False
@@ -139,10 +148,10 @@ def product_detail(request, slug):
     
     context = {
         'product': product,
-        'related_products': related_products,
         'reviews': reviews,
-        'average_rating': average_rating,
+        'average_rating': round(average_rating, 1),
         'review_count': review_count,
+        'related_products': related_products,
         'is_wishlist': is_wishlist,
     }
     return render(request, 'products/product_detail.html', context)
@@ -222,6 +231,10 @@ def create_review(request, product_id):
         title = request.POST.get('title', '')
         comment = request.POST.get('comment')
         
+        if not rating or not comment:
+            messages.error(request, 'Please provide both rating and review comment.')
+            return redirect('products:product_detail', slug=product.slug)
+
         # Check if user already reviewed this product
         existing_review = Review.objects.filter(
             product=product,
@@ -238,7 +251,8 @@ def create_review(request, product_id):
             user=request.user,
             rating=rating,
             title=title,
-            comment=comment
+            comment=comment,
+            is_approved=True
         )
         
         messages.success(request, 'Your review has been submitted and is awaiting approval.')
@@ -246,6 +260,7 @@ def create_review(request, product_id):
     
     context = {
         'product': product,
+        'reviews': reviews,
     }
     return render(request, 'products/create_review.html', context)
 
@@ -483,79 +498,210 @@ def checkout(request):
         messages.error(request, 'Your cart is empty.')
         return redirect('products:cart')
     
-    cart_items = cart.orderitems.all()  # FIXED: Changed from cart.items to cart.orderitems
+    # Initialize affiliate_code at function start
+    affiliate_code = None
     
+    # Get cart and items
+    cart = get_or_create_cart(request)
+    cart_items = cart.orderitems.all()
+    
+    # Redirect if cart is empty
     if not cart_items.exists():
         messages.error(request, 'Your cart is empty.')
-        return redirect('products:cart')
+        return redirect('orders:cart')
     
-    # Get user addresses
+    # Get user's shipping addresses
     addresses = request.user.addresses.filter(is_active=True)
-    default_address = addresses.filter(is_default=True).first()
     
     if request.method == 'POST':
-        # Process order
-        address_id = request.POST.get('address')
+        # ====== ORDER SUBMISSION ======
+        address_id = request.POST.get('address', '').strip()
         payment_method = request.POST.get('payment_method', 'card')
         
+        # ====== VALIDATE ADDRESS SELECTION ======
         if not address_id:
             messages.error(request, 'Please select a shipping address.')
-            return render(request, 'products/checkout.html', {
-                'cart': cart,
-                'cart_items': cart_items,
-                'addresses': addresses,
-                'default_address': default_address,
-            })
+            context = get_checkout_context(cart, cart_items, addresses)
+            return render(request, 'orders/checkout.html', context)
         
-        address = get_object_or_404(Address, id=address_id, user=request.user)
-        
-        # Create order
-        order = Order.objects.create(
-            user=request.user,
-            subtotal=cart.subtotal,
-            shipping_cost=cart.shipping,
-            tax=cart.tax,
-            total=cart.total,
-            shipping_first_name=address.first_name,
-            shipping_last_name=address.last_name,
-            shipping_phone=address.phone,
-            shipping_email=address.email,
-            shipping_address_line1=address.address_line1,
-            shipping_address_line2=address.address_line2,
-            shipping_city=address.city,
-            shipping_state=address.state,
-            shipping_postal_code=address.postal_code,
-            shipping_country=address.country,
-            payment_method=payment_method,
-        )
-        
-        # Create order items
-        for cart_item in cart_items:
-            OrderItem.objects.create(
-                order=order,
-                product=cart_item.product,
-                product_name=cart_item.product.name,
-                product_sku=cart_item.product.sku or '',
-                quantity=cart_item.quantity,
-                price=cart_item.product.price,
-            )
-        
-        # Send order confirmation email
+        # Convert to integer and validate format
         try:
-            order.send_order_confirmation_email()
-        except:
-            pass
+            address_id = int(address_id)
+        except (ValueError, TypeError):
+            messages.error(request, 'Invalid address format. Please select a valid address.')
+            context = get_checkout_context(cart, cart_items, addresses)
+            return render(request, 'orders/checkout.html', context)
         
-        # Clear cart
-        cart_items.delete()
+        # ====== GET AND VERIFY ADDRESS ======
+        try:
+            address = Address.objects.get(id=address_id, user=request.user, is_active=True)
+        except Address.DoesNotExist:
+            messages.error(request, 'Selected address not found. Please choose a valid address.')
+            context = get_checkout_context(cart, cart_items, addresses)
+            return render(request, 'orders/checkout.html', context)
         
-        messages.success(request, f'Order #{order.order_number} placed successfully!')
-        return redirect('orders:order_detail', order_id=order.id)
+        # ====== VALIDATE ADDRESS HAS REQUIRED FIELDS ======
+        required_fields = ['first_name', 'last_name', 'phone', 'email', 
+                          'address_line1', 'city', 'state', 'postal_code', 'country']
+        missing_fields = [field for field in required_fields if not getattr(address, field, None)]
+        
+        if missing_fields:
+            messages.error(request, f'Selected address is incomplete. Missing: {", ".join(missing_fields)}. Please edit or add a new address.')
+            context = get_checkout_context(cart, cart_items, addresses)
+            return render(request, 'orders/checkout.html', context)
+        
+        # ====== CALCULATE TOTALS ======
+        shipping_cost = Decimal("50") if cart.subtotal < Decimal("500") else Decimal("0")
+        tax = cart.subtotal * Decimal("0.0665")
+        
+        # Calculate discount from coupon
+        discount = Decimal("0")
+        if 'applied_coupon' in request.session:
+            coupon_code = request.session['applied_coupon']
+            try:
+                coupon = Coupon.objects.get(code=coupon_code)
+                if coupon.discount_type == 'percentage':
+                    discount = (cart.subtotal * Decimal(str(coupon.discount_value))) / Decimal("100")
+                else:
+                    discount = Decimal(str(coupon.discount_value))
+            except Coupon.DoesNotExist:
+                pass
+        
+        total = cart.subtotal + shipping_cost + tax - discount
+        
+        # ====== GET AFFILIATE CODE ======
+        affiliate_code = request.GET.get('ref') or request.COOKIES.get('affiliate_code')
+        
+        # ====== CREATE ORDER ======
+        try:
+            with transaction.atomic():
+                # Create order
+                order = Order.objects.create(
+                    user=request.user,
+                    subtotal=cart.subtotal,
+                    shipping_cost=shipping_cost,
+                    tax=tax,
+                    discount=discount,
+                    total=total,
+                    shipping_first_name=address.first_name,
+                    shipping_last_name=address.last_name,
+                    shipping_phone=address.phone,
+                    shipping_email=address.email,
+                    shipping_address_line1=address.address_line1,
+                    shipping_address_line2=address.address_line2 or '',
+                    shipping_city=address.city,
+                    shipping_state=address.state,
+                    shipping_postal_code=address.postal_code,
+                    shipping_country=address.country,
+                    payment_method=payment_method,
+                    affiliate_code=affiliate_code,
+                )
+                
+                # Create order items
+                for cart_item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=cart_item.product,
+                        product_name=cart_item.product.name,
+                        product_sku=cart_item.product.sku or '',
+                        quantity=cart_item.quantity,
+                        price=cart_item.product.price,
+                    )
+                
+                # ====== TRACK AFFILIATE COMMISSION ======
+                if affiliate_code:
+                    try:
+                        affiliate = AffiliateUser.objects.get(
+                            affiliate_code=affiliate_code,
+                            status='active'
+                        )
+                        
+                        program = affiliate.program
+                        commission_rate = Decimal(str(program.commission_rate)) / Decimal("100")
+                        commission_amount = total * commission_rate
+                        
+                        affiliate_order = AffiliateOrder.objects.create(
+                            affiliate=affiliate,
+                            order=order,
+                            order_amount=total,
+                            commission_rate=program.commission_rate,
+                            commission_amount=commission_amount,
+                            status='pending'
+                        )
+                        
+                        AffiliateTransaction.objects.create(
+                            affiliate=affiliate,
+                            transaction_type='earning',
+                            amount=commission_amount,
+                            description=f"Commission from Order #{order.order_number}",
+                            related_order=affiliate_order,
+                            balance_after=affiliate.available_balance + commission_amount
+                        )
+                        
+                        affiliate.total_referrals += 1
+                        affiliate.save()
+                        
+                    except AffiliateUser.DoesNotExist:
+                        pass
+                
+                # ====== CREATE PAYMENT RECORD ======
+                Payment.objects.create(
+                    order=order,
+                    payment_method=payment_method,
+                    amount=total,
+                )
+                
+                # ====== CLEANUP ======
+                order.send_order_confirmation_email()
+                cart_items.delete()
+                
+                if 'applied_coupon' in request.session:
+                    del request.session['applied_coupon']
+                
+                messages.success(request, f'Order #{order.order_number} placed successfully!')
+                response = redirect('orders:order_detail', order_id=order.id)
+                response.delete_cookie('affiliate_code')
+                return response
+                
+        except Exception as e:
+            messages.error(request, f'Error creating order: {str(e)}')
+            return redirect('orders:checkout')
     
-    context = {
+    # ====== GET REQUEST - DISPLAY CHECKOUT PAGE ======
+    context = get_checkout_context(cart, cart_items, addresses)
+    return render(request, 'orders/checkout.html', context)
+
+
+def get_checkout_context(cart, cart_items, addresses):
+    """Helper function to build checkout context"""
+    subtotal = cart.subtotal
+    shipping = Decimal("50") if subtotal < Decimal("500") else Decimal("0")
+    tax = subtotal * Decimal("0.0665")
+    
+    # Get coupon discount if applied
+    discount = Decimal("0")
+    applied_coupon = None
+    if 'applied_coupon' in request.session:
+        coupon_code = request.session['applied_coupon']
+        try:
+            applied_coupon = Coupon.objects.get(code=coupon_code)
+            if applied_coupon.discount_type == 'percentage':
+                discount = (subtotal * Decimal(str(applied_coupon.discount_value))) / Decimal("100")
+            else:
+                discount = Decimal(str(applied_coupon.discount_value))
+        except Coupon.DoesNotExist:
+            pass
+    
+    total = subtotal + shipping + tax - discount
+    
+    return {
         'cart': cart,
         'cart_items': cart_items,
         'addresses': addresses,
-        'default_address': default_address,
+        'subtotal': subtotal,
+        'shipping': shipping,
+        'tax': tax,
+        'discount': discount,
+        'total': total,
+        'applied_coupon': applied_coupon,
     }
-    return render(request, 'products/checkout.html', context)

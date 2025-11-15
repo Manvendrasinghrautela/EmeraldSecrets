@@ -3,8 +3,8 @@
    =============================================================== */
 
    .footer {
-    background-color: var(--brown-bg);
-    color: white;
+    background-color: rgb(255, 255, 190);
+    color: rgb(0, 0, 0);
     margin-top: 4rem;
 }
 
@@ -20,7 +20,7 @@
 .footer-section h3 {
     font-size: 1.25rem;
     margin-bottom: 1.5rem;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .footer-section p {
@@ -32,14 +32,14 @@
 
 .footer-section a {
     display: block;
-    color: rgba(255,255,255,0.85);
+    color: rgba(0, 0, 0, 0.85);
     margin-bottom: 0.75rem;
     font-size: 0.95rem;
     transition: color 0.2s;
 }
 
 .footer-section a:hover {
-    color: white;
+    color: rgb(85, 90, 21);
     padding-left: 5px;
 }
 
@@ -52,7 +52,7 @@
 .social-links a {
     width: 44px;
     height: 44px;
-    background-color: rgba(255,255,255,0.15);
+    background-color: rgb(255, 255, 255);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -94,7 +94,7 @@
 }
 
 .footer-bottom {
-    background-color: rgba(0,0,0,0.2);
+    background-color: white;
     padding: 1.5rem;
     text-align: center;
     font-size: 0.9rem;

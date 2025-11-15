@@ -89,7 +89,8 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     description = models.TextField()
     short_description = models.CharField(max_length=300, blank=True)
-    
+    rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00, null=True, blank=True)
+
     # Categorization
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
@@ -305,11 +306,11 @@ class Review(models.Model):
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_reviews')
-    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
+    rating = models.PositiveSmallIntegerField(choices=[(i, i) for i in range(1, 6)])
     title = models.CharField(max_length=200, blank=True)
     comment = models.TextField()
     is_verified_purchase = models.BooleanField(default=False)
-    is_approved = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -198,7 +198,7 @@ def address_list(request):
 
 
 @login_required
-def address_add(request):
+def add_address(request):
     """Add new address"""
     if request.method == 'POST':
         form = AddressForm(request.POST)
