@@ -121,7 +121,7 @@ body {
 
 .product-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
 }
 
 .product-image {
@@ -623,6 +623,7 @@ body {
 .collection-info h3 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
+    color: #bedf97;
 }
 
 .collection-info p {
