@@ -164,8 +164,8 @@ SEND_NOTIFICATION_EMAILS = os.getenv('SEND_NOTIFICATION_EMAILS', 'True') == 'Tru
 # PAYMENT GATEWAY CONFIGURATION (Razorpay example)
 # ============================================================================
 
-RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', '')
-RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', '')
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', 'rzp_live_Ri4CMN9v4I2234')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', 'BUFxIIS3Lgtr00EZuB3VJ043')
 
 # ============================================================================
 # AFFILIATE PROGRAM SETTINGS

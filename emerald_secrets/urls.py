@@ -17,6 +17,7 @@ urlpatterns = [
 
     # Products app (includes /products/collections/ for all current links)
     path('products/', include(('products.urls', 'products'), namespace='products')),
+    path('payments/', include('payments.urls')),
 
     # Other apps
     path('accounts/', include('accounts.urls', namespace='accounts')),

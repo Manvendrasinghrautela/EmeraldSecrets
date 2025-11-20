@@ -1,0 +1,16 @@
+<!-- templates/payments/initiate.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Initiate Payment</title>
+</head>
+<body>
+    <h1>Start Payment</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="amount">Amount (INR):</label>
+        <input type="number" step="1" min="1" name="amount" id="amount" required>
+        <button type="submit">Pay</button>
+    </form>
+</body>
+</html>
