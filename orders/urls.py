@@ -29,6 +29,4 @@ urlpatterns = [
     
     # Payment URLs
     path('orders/<int:order_id>/payment-status/', views.payment_status, name='payment_status'),
-    path('initiate/', views.initiate_payment, name='initiate_payment'),
-    path('callback/', views.payment_callback, name='payment_callback'),
 ]
