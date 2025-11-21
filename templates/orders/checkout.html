@@ -271,7 +271,7 @@
                       {% endfor %}
                     {% endif %}
 
-                    <form method="post" id="checkoutForm" novalidate>
+                    <form method="post" action="{% url 'orders:create_order' %}" id="checkoutForm" novalidate>
                         {% csrf_token %}
 
                         <h3>Select Shipping Address</h3>
