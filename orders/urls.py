@@ -18,8 +18,15 @@ urlpatterns = [
     path('coupon/remove/', views.remove_coupon, name='remove_coupon'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart_ajax, name='add_to_cart_ajax'),
 
-    # Checkout URLs
     path('checkout/', views.checkout, name='checkout'),
+    path('create/', views.create_order, name='create_order'),
+    path('payment/<int:order_id>/', views.payment_page, name='payment'),
+    path('payment/callback/', views.payment_callback, name='payment_callback'),
+    path('success/<int:order_id>/', views.order_success, name='order_success'),
+    path('failure/', views.order_failure, name='order_failure'),
+    path('failure/<int:order_id>/', views.order_failure, name='order_failure_with_order'),
+    path('invoice/<int:order_id>/', views.download_invoice, name='download_invoice'),
+
     
     # Order URLs
     path('orders/', views.order_list, name='order_list'),

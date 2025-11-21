@@ -2,10 +2,25 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Complete Payment</h2>
-    <p>Order #{{ order.id }} - Amount: ₹{{ order.total_amount }}</p>
-    
-    <button id="rzp-button" class="btn btn-primary btn-lg">Pay ₹{{ order.total_amount }}</button>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3>Complete Your Payment</h3>
+                    <p class="mt-3">Order #{{ order.order_number }}</p>
+                    <h2 class="text-primary">₹{{ order.total }}</h2>
+                    
+                    <button id="rzp-button" class="btn btn-lg btn-success mt-4">
+                        Pay Now with Razorpay
+                    </button>
+                    
+                    <p class="mt-3 text-muted">
+                        <small>Secured by Razorpay</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -15,13 +30,13 @@ var options = {
     "amount": "{{ amount }}",
     "currency": "{{ currency }}",
     "name": "Emerald Secrets",
-    "description": "Order #{{ order.id }}",
+    "description": "Order #{{ order.order_number }}",
     "order_id": "{{ razorpay_order_id }}",
     "handler": function (response){
-        // Submit payment details to callback
+        // Create form and submit
         var form = document.createElement('form');
         form.method = 'POST';
-        form.action = '{% url "payments:payment_callback" %}';
+        form.action = '{% url "orders:payment_callback" %}';
         
         var fields = {
             'razorpay_payment_id': response.razorpay_payment_id,
@@ -51,9 +66,14 @@ var options = {
 };
 
 var rzp = new Razorpay(options);
+
+// Auto-open payment on page load
 document.getElementById('rzp-button').onclick = function(e){
     rzp.open();
     e.preventDefault();
 }
+
+// Optionally auto-open on page load
+// rzp.open();
 </script>
 {% endblock %}

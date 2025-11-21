@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="alert alert-success text-center">
+                <h2>✓ Payment Successful!</h2>
+                <p>Your order has been confirmed.</p>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4>Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+                    <p><strong>Payment ID:</strong> {{ order.razorpay_payment_id }}</p>
+                    <p><strong>Amount Paid:</strong> ₹{{ order.total }}</p>
+                    <p><strong>Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+                    
+                    <hr>
+                    
+                    <h5>Items Ordered:</h5>
+                    <ul>
+                        {% for item in order.items.all %}
+                        <li>{{ item.product.name }} - Qty: {{ item.quantity }} - ₹{{ item.get_total }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <hr>
+                    
+                    <h5>Shipping Address:</h5>
+                    <p>
+                        {{ order.shipping_first_name }} {{ order.shipping_last_name}}<br>
+                        {{ order.shipping_address_line1 }}<br>
+                        {% if order.shipping_address_line2 %}{{ order.shipping_address_line2 }}<br>{% endif %}
+                        {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}
+                    </p>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'orders:download_invoice' order.id %}" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download Invoice
+                        </a>
+                        
+                        <a href="{% url 'products:home' %}" class="btn btn-secondary">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -11,59 +11,48 @@
     border-radius: 8px;
     margin-top: 20px;
 }
-
 .cart-items-section {
     margin-bottom: 20px;
 }
-
 .cart-item {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px solid #eee;
 }
-
 .item-name {
     margin: 0;
     font-weight: 500;
 }
-
 .item-price {
     margin: 0;
     font-weight: 500;
     color: #333;
 }
-
 .totals-section {
     margin-top: 20px;
 }
-
 .total-row {
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
     font-size: 14px;
 }
-
 .total-row.total {
     border-top: 2px solid #333;
     padding-top: 12px;
     font-size: 16px;
 }
-
 .total-row.discount .value {
     color: green;
 }
-
 .label {
     color: #666;
 }
-
 .value {
     font-weight: 600;
     color: #333;
 }
-
 /* Error Messages */
 .error-message {
     background: #fee;
@@ -73,7 +62,6 @@
     border-radius: 4px;
     margin-bottom: 15px;
 }
-
 .form-errors {
     background: #fee;
     padding: 12px;
@@ -81,34 +69,28 @@
     margin-bottom: 15px;
     border-left: 4px solid #c33;
 }
-
 .form-errors ul {
     margin: 0;
     padding-left: 20px;
     color: #c33;
 }
-
 .form-errors li {
     margin: 4px 0;
 }
-
 /* Address Selection Styles */
 .saved-addresses {
     margin-bottom: 30px;
 }
-
 .address-option {
     display: block;
     margin-bottom: 15px;
     cursor: pointer;
 }
-
 .address-option input[type="radio"] {
     margin-right: 10px;
     vertical-align: top;
     margin-top: 5px;
 }
-
 .address-card {
     border: 2px solid #ddd;
     border-radius: 8px;
@@ -119,31 +101,26 @@
     width: calc(100% - 30px);
     margin-left: 30px;
 }
-
 .address-option input[type="radio"]:checked + .address-card {
     border-color: #4CAF50;
     background: #f0f8f0;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
-
 .address-name {
     font-size: 16px;
     margin: 0 0 8px 0;
     color: #333;
 }
-
 .address-line,
 .address-contact {
     margin: 4px 0;
     font-size: 14px;
     color: #555;
 }
-
 .add-address-link {
     margin-top: 15px;
     text-align: center;
 }
-
 .add-address-link a {
     color: #4CAF50;
     text-decoration: none;
@@ -154,19 +131,16 @@
     border-radius: 6px;
     transition: all 0.3s;
 }
-
 .add-address-link a:hover {
     background: #4CAF50;
     color: white;
 }
-
 .no-addresses {
     text-align: center;
     padding: 40px;
     background: #f9f9f9;
     border-radius: 8px;
 }
-
 .no-addresses .btn {
     margin-top: 15px;
     padding: 12px 30px;
@@ -178,25 +152,21 @@
     font-weight: 600;
     transition: background 0.3s;
 }
-
 .no-addresses .btn:hover {
     background: #45a049;
 }
-
 /* Payment Section */
 .payment-section {
     margin-top: 30px;
     padding-top: 20px;
     border-top: 2px solid #eee;
 }
-
 .payment-options {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-top: 15px;
 }
-
 .payment-option {
     display: flex;
     align-items: center;
@@ -206,21 +176,17 @@
     cursor: pointer;
     transition: all 0.3s;
 }
-
 .payment-option:hover {
     border-color: #4CAF50;
     background: #f9f9f9;
 }
-
 .payment-option input[type="radio"] {
     margin-right: 12px;
 }
-
 .payment-option input[type="radio"]:checked + span {
     font-weight: 600;
     color: #4CAF50;
 }
-
 /* Button Styles */
 .place-order-btn {
     width: 100%;
@@ -235,51 +201,42 @@
     margin-top: 25px;
     transition: background 0.3s;
 }
-
 .place-order-btn:hover {
     background: #45a049;
 }
-
 .place-order-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
 }
-
 .terms-text {
     text-align: center;
     margin-top: 15px;
     font-size: 12px;
     color: #666;
 }
-
 .terms-text a {
     color: #4CAF50;
     text-decoration: none;
 }
-
 .terms-text a:hover {
     text-decoration: underline;
 }
-
 /* Checkout Layout */
 .checkout-section {
     max-width: 1200px;
     margin: 40px auto;
     padding: 20px;
 }
-
 .checkout-section h1 {
     text-align: center;
     margin-bottom: 40px;
     color: #333;
 }
-
 .checkout-layout {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 30px;
 }
-
 @media (max-width: 768px) {
     .checkout-layout {
         grid-template-columns: 1fr;
@@ -296,30 +253,28 @@
         <!-- Shipping Address Selection -->
         <div class="shipping-form">
             <h2>Shipping Information</h2>
-            
+
             {% if addresses %}
                 <div class="saved-addresses">
-                    <!-- Display error messages if form submission failed -->
                     {% if messages %}
-                        {% for message in messages %}
-                            {% if message.tags == 'error' %}
-                            <div class="error-message">
-                                ⚠️ {{ message }}
-                            </div>
-                            {% endif %}
-                        {% endfor %}
+                      {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                          <div class="error-message">
+                            ⚠️ {{ message }}
+                          </div>
+                        {% endif %}
+                      {% endfor %}
                     {% endif %}
 
                     <form method="post" id="checkoutForm" novalidate>
                         {% csrf_token %}
-                        
+
                         <h3>Select Shipping Address</h3>
-                        
-                        <!-- Address selection error if address not selected -->
+
                         <div id="addressError" style="display: none;" class="error-message">
                             ⚠️ Please select a shipping address
                         </div>
-                        
+
                         {% for addr in addresses %}
                         <label class="address-option">
                             <input type="radio" name="address" value="{{ addr.id }}" 
@@ -338,11 +293,11 @@
                             </div>
                         </label>
                         {% endfor %}
-                        
+
                         <div class="add-address-link">
                             <a href="{% url 'accounts:add_address' %}">+ Add New Address</a>
                         </div>
-                        
+
                         <!-- Payment Method -->
                         <div class="payment-section">
                             <h2>Payment Method</h2>
@@ -357,7 +312,7 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <button type="submit" class="place-order-btn" id="placeOrderBtn">Place Order</button>
                         <p class="terms-text">
                             By placing your order, you agree to our <a href="#">Terms & Conditions</a>
@@ -365,7 +320,6 @@
                     </form>
                 </div>
             {% else %}
-                <!-- No Addresses Found -->
                 <div class="no-addresses">
                     <h3>No Shipping Address Found</h3>
                     <p>Please add a shipping address to continue with checkout.</p>
@@ -377,8 +331,7 @@
         <!-- Order Summary -->
         <div class="order-summary">
             <h2>Order Summary</h2>
-            
-            <!-- Cart Items Section -->
+
             <div class="cart-items-section">
                 <h3>Items</h3>
                 {% for item in cart_items %}
@@ -393,31 +346,30 @@
                 {% endfor %}
                 <hr>
             </div>
-            
-            <!-- Totals Section -->
+
             <div class="totals-section">
                 <div class="total-row">
                     <span class="label">Subtotal:</span>
                     <span class="value">₹{{ subtotal|floatformat:2 }}</span>
                 </div>
-                
+
                 <div class="total-row">
                     <span class="label">Shipping:</span>
                     <span class="value">₹{{ shipping|floatformat:2 }}</span>
                 </div>
-                
+
                 <div class="total-row">
                     <span class="label">Tax (6.65%):</span>
                     <span class="value">₹{{ tax|floatformat:2 }}</span>
                 </div>
-                
+
                 {% if discount %}
                 <div class="total-row discount">
                     <span class="label">Discount:</span>
                     <span class="value">-₹{{ discount|floatformat:2 }}</span>
                 </div>
                 {% endif %}
-                
+
                 <div class="total-row total">
                     <span class="label"><strong>Total:</strong></span>
                     <span class="value"><strong>₹{{ total|floatformat:2 }}</strong></span>
