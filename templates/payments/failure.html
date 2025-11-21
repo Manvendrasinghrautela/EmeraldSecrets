@@ -1,13 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Failed</title>
-</head>
-<body>
-    <h1>Payment Failed</h1>
-    <p>{{ error }}</p>
-    <a href="/payments/initiate/">Try Again</a>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h2>✗ Payment Failed</h2>
+        <p>Unfortunately, your payment could not be processed.</p>
+    </div>
+    
+    {% if order %}
+    <p>Order #{{ order.id }} - Please try again.</p>
+    <a href="{% url 'payments:initiate_payment' %}" class="btn btn-primary">Retry Payment</a>
+    {% endif %}
+    
+    <a href="{% url 'products:home' %}" class="btn btn-secondary">Continue Shopping</a>
+</div>
+{% endblock %}
