@@ -11,7 +11,7 @@ urlpatterns = [
     path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/update/<int:product_id>/', views.update_cart_item, name='update_cart'),
     path('cart/clear/', views.clear_cart, name='clear_cart'),
-    path('cart/count/', views.get_cart_count, name='cart_count'),
+    path('cart/count/', views.cart_count, name='cart_count'),
 
     # Coupon URLs
     path('coupon/apply/', views.apply_coupon, name='apply_coupon'),

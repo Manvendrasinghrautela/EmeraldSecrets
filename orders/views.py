@@ -410,6 +410,7 @@ def payment_page(request, order_id):
     return render(request, 'orders/payment.html', context)
 
 
+
 @csrf_exempt
 def payment_callback(request):
     """Handle Razorpay payment callback"""
@@ -648,3 +649,13 @@ def cart_count(request):
     cart = get_or_create_cart(request)
     count = cart.items.count()
     return JsonResponse({'count': count})
+
+
+@login_required
+def payment_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return JsonResponse({
+        'status': order.payment_status,
+        'razorpay_payment_id': order.razorpay_payment_id,
+        'amount': str(order.total),
+    })
