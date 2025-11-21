@@ -55,7 +55,7 @@ def get_client_ip(request):
 def cart_view(request):
     """View shopping cart"""
     cart = get_or_create_cart(request)
-    cart_items = cart.items.all()
+    cart_items = cart.orderitems.all()
     
     subtotal = cart.get_subtotal()
     shipping = Decimal("50") if subtotal < Decimal("500") else Decimal("0")
@@ -148,7 +148,7 @@ def update_cart_item(request, product_id):
 def clear_cart(request):
     """Clear entire cart"""
     cart = get_or_create_cart(request)
-    cart.items.all().delete()
+    cart.orderitems.all().delete()
     messages.success(request, 'Cart cleared.')
     
     return redirect('orders:cart')
@@ -212,7 +212,7 @@ def remove_coupon(request):
 def checkout(request):
     """Checkout page"""
     cart = get_or_create_cart(request)
-    cart_items = cart.items.all()
+    cart_items = cart.orderitems.all()
     
     if not cart_items.exists():
         messages.error(request, 'Your cart is empty.')
@@ -260,7 +260,7 @@ def create_order(request):
     """Create order and initiate Razorpay payment"""
     if request.method == 'POST':
         cart = get_or_create_cart(request)
-        cart_items = cart.items.all()
+        cart_items = cart.orderitems.all()
         
         if not cart_items.exists():
             messages.error(request, 'Your cart is empty.')
@@ -447,7 +447,7 @@ def payment_callback(request):
                 # Clear cart
                 cart = Cart.objects.filter(user=order.user).first()
                 if cart:
-                    cart.items.all().delete()
+                    cart.orderitems.all().delete()
                 
                 # Clear coupon
                 if hasattr(request, 'session') and 'applied_coupon' in request.session:
@@ -623,7 +623,7 @@ def add_to_cart_ajax(request, product_id):
         data = json.loads(request.body)
         quantity = int(data.get('quantity', 1))
         
-        cart_item, created = cart.items.get_or_create(
+        cart_item, created = cart.orderitems.get_or_create(
             product=product,
             defaults={'quantity': quantity}
         )
@@ -635,7 +635,7 @@ def add_to_cart_ajax(request, product_id):
         return JsonResponse({
             'success': True,
             'message': 'Product added to cart',
-            'cart_count': cart.items.count()
+            'cart_count': cart.orderitems.count()
         })
         
     except Product.DoesNotExist:
@@ -647,7 +647,7 @@ def add_to_cart_ajax(request, product_id):
 def cart_count(request):
     """Get cart item count"""
     cart = get_or_create_cart(request)
-    count = cart.items.count()
+    count = cart.orderitems.count()
     return JsonResponse({'count': count})
 
 
