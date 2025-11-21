@@ -20,6 +20,7 @@ urlpatterns = [
 
     path('checkout/', views.checkout, name='checkout'),
     path('create/', views.create_order, name='create_order'),
+    path('shipping-quote/', views.shipping_quote, name='shipping_quote'),
     path('payment/<int:order_id>/', views.payment_page, name='payment'),
     path('payment/callback/', views.payment_callback, name='payment_callback'),
     path('success/<int:order_id>/', views.order_success, name='order_success'),

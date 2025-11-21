@@ -20,7 +20,7 @@
                 <tr>
                     <td>#{{ order.id }}</td>
                     <td>{{ order.created_at|date:"M d, Y" }}</td>
-                    <td>₹{{ order.total_amount }}</td>
+                    <td>₹{{ order.total|floatformat:2 }}</td>
                     <td>
                         <form method="post">
                             {% csrf_token %}

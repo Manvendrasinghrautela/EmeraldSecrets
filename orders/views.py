@@ -1,23 +1,123 @@
 # orders/views.py - COMPLETE AND CORRECTED
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
-from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponse
-from django.conf import settings
-from django.db import transaction
-from .models import Cart, CartItem, Order, OrderItem, Payment, Coupon
-from products.models import Product
-from accounts.models import Address
-from decimal import Decimal
 import json
+import logging
+from decimal import Decimal, ROUND_HALF_UP
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db import transaction
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
+from accounts.models import Address
+from products.models import Product
+
+from .models import Cart, CartItem, Order, OrderItem, Payment, Coupon
+from .services.shipping import get_shipping_cost_for_cart
+
 import razorpay
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+logger = logging.getLogger(__name__)
 
+TWOPLACES = Decimal('0.01')
+GST_RATE = Decimal(str(getattr(settings, 'GST_RATE', Decimal('0.18'))))
+
+
+def _to_decimal(value):
+    if isinstance(value, Decimal):
+        return value
+    try:
+        return Decimal(str(value))
+    except Exception:
+        return Decimal('0.00')
+
+
+def _quantize(amount: Decimal) -> Decimal:
+    return _to_decimal(amount).quantize(TWOPLACES, rounding=ROUND_HALF_UP)
+
+
+def _calculate_tax(subtotal: Decimal) -> Decimal:
+    if subtotal <= 0:
+        return Decimal('0.00')
+    return _quantize(subtotal * GST_RATE)
+
+
+def _get_discount(request, subtotal: Decimal):
+    discount = Decimal('0.00')
+    applied_coupon = None
+    coupon_code = request.session.get('applied_coupon')
+
+    if coupon_code:
+        try:
+            coupon = Coupon.objects.get(code=coupon_code)
+            applied_coupon = coupon
+            if coupon.discount_type == 'percentage':
+                discount = (subtotal * Decimal(str(coupon.discount_value))) / Decimal('100')
+            else:
+                discount = Decimal(str(coupon.discount_value))
+        except Coupon.DoesNotExist:
+            request.session.pop('applied_coupon', None)
+            applied_coupon = None
+
+    if discount > subtotal:
+        discount = subtotal
+
+    return _quantize(discount), applied_coupon
+
+
+def _get_default_address(user):
+    if not user.is_authenticated:
+        return None
+    address = user.addresses.filter(is_active=True, is_default=True).first()
+    if address:
+        return address
+    return user.addresses.filter(is_active=True).first()
+
+
+def _calculate_order_pricing(cart_items, request=None, postal_code=None, payment_method='upi'):
+    cart_items = list(cart_items)
+    subtotal = Decimal('0.00')
+    for item in cart_items:
+        subtotal += _to_decimal(getattr(item, 'total_price', Decimal('0.00')))
+    subtotal = _quantize(subtotal)
+
+    tax = _calculate_tax(subtotal)
+    shipping = _quantize(
+        get_shipping_cost_for_cart(
+            cart_items,
+            postal_code=postal_code,
+            is_cod=(payment_method == 'cod')
+        )
+    ) if subtotal > 0 else Decimal('0.00')
+
+    discount = Decimal('0.00')
+    applied_coupon = None
+    if request:
+        discount, applied_coupon = _get_discount(request, subtotal)
+
+    total = _quantize(subtotal + tax + shipping - discount)
+    if total < 0:
+        total = Decimal('0.00')
+
+    return {
+        'items': cart_items,
+        'subtotal': subtotal,
+        'tax': tax,
+        'shipping': shipping,
+        'discount': discount,
+        'total': total,
+        'coupon': applied_coupon,
+    }
+
+
+def _decimal_to_str(amount: Decimal) -> str:
+    return f"{_quantize(amount):.2f}"
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -55,20 +155,25 @@ def get_client_ip(request):
 def cart_view(request):
     """View shopping cart"""
     cart = get_or_create_cart(request)
-    cart_items = cart.orderitems.all()
-    
-    subtotal = cart.get_subtotal()
-    shipping = Decimal("50") if subtotal < Decimal("500") else Decimal("0")
-    tax = subtotal * Decimal("0.0665")
-    total = subtotal + shipping + tax
+    cart_items = list(cart.orderitems.select_related('product'))
+    default_address = _get_default_address(request.user)
+    postal_code = default_address.postal_code if default_address else None
+
+    pricing = _calculate_order_pricing(cart_items, request=request, postal_code=postal_code)
+    gst_percent = (GST_RATE * Decimal('100')).quantize(Decimal('0.01'))
 
     context = {
         'cart': cart,
         'cart_items': cart_items,
-        'subtotal': subtotal,
-        'shipping': shipping,
-        'tax': tax,
-        'total': total,
+        'subtotal': pricing['subtotal'],
+        'shipping': pricing['shipping'],
+        'tax': pricing['tax'],
+        'discount': pricing['discount'],
+        'total': pricing['total'],
+        'applied_coupon': pricing['coupon'],
+        'gst_rate_percent': gst_percent,
+        'shipping_estimated': postal_code is None,
+        'shipping_pin': postal_code,
     }
     return render(request, 'orders/cart.html', context)
 
@@ -212,44 +317,36 @@ def remove_coupon(request):
 def checkout(request):
     """Checkout page"""
     cart = get_or_create_cart(request)
-    cart_items = cart.orderitems.all()
+    cart_items = list(cart.orderitems.select_related('product'))
     
-    if not cart_items.exists():
+    if not cart_items:
         messages.error(request, 'Your cart is empty.')
         return redirect('orders:cart')
-    
+
     addresses = request.user.addresses.filter(is_active=True)
-    
-    # Calculate totals
-    subtotal = cart.get_subtotal()
-    shipping = Decimal("50") if subtotal < Decimal("500") else Decimal("0")
-    tax = subtotal * Decimal("0.0665")
-    
-    discount = Decimal("0")
-    applied_coupon = None
-    if 'applied_coupon' in request.session:
-        coupon_code = request.session['applied_coupon']
-        try:
-            applied_coupon = Coupon.objects.get(code=coupon_code)
-            if applied_coupon.discount_type == 'percentage':
-                discount = (subtotal * Decimal(str(applied_coupon.discount_value))) / Decimal("100")
-            else:
-                discount = Decimal(str(applied_coupon.discount_value))
-        except Coupon.DoesNotExist:
-            pass
-    
-    total = subtotal + shipping + tax - discount
-    
+    default_address = _get_default_address(request.user)
+    postal_code = default_address.postal_code if default_address else None
+
+    pricing = _calculate_order_pricing(
+        cart_items,
+        request=request,
+        postal_code=postal_code,
+    )
+    gst_percent = (GST_RATE * Decimal('100')).quantize(Decimal('0.01'))
+
     context = {
         'cart': cart,
-        'cart_items': cart_items,
+        'cart_items': pricing['items'],
         'addresses': addresses,
-        'subtotal': subtotal,
-        'shipping': shipping,
-        'tax': tax,
-        'discount': discount,
-        'total': total,
-        'applied_coupon': applied_coupon,
+        'subtotal': pricing['subtotal'],
+        'shipping': pricing['shipping'],
+        'tax': pricing['tax'],
+        'discount': pricing['discount'],
+        'total': pricing['total'],
+        'applied_coupon': pricing['coupon'],
+        'gst_rate_percent': gst_percent,
+        'shipping_estimated': postal_code is None,
+        'shipping_pin': postal_code,
     }
     
     return render(request, 'orders/checkout.html', context)
@@ -260,11 +357,15 @@ def create_order(request):
     """Create order and initiate Razorpay payment"""
     if request.method == 'POST':
         cart = get_or_create_cart(request)
-        cart_items = cart.orderitems.all()
+        cart_items = list(cart.orderitems.select_related('product'))
         
-        if not cart_items.exists():
+        if not cart_items:
             messages.error(request, 'Your cart is empty.')
             return redirect('orders:cart')
+        
+        payment_method = request.POST.get('payment_method', 'upi')
+        if payment_method not in ('card', 'upi'):
+            payment_method = 'upi'
         
         # Get address
         address_id = request.POST.get('address')
@@ -278,24 +379,16 @@ def create_order(request):
             messages.error(request, 'Selected address not found.')
             return redirect('orders:checkout')
         
-        # Calculate totals
-        subtotal = cart.get_subtotal()
-        shipping_cost = Decimal("50") if subtotal < Decimal("500") else Decimal("0")
-        tax = subtotal * Decimal("0.0665")
+        pricing = _calculate_order_pricing(
+            cart_items,
+            request=request,
+            postal_code=address.postal_code,
+            payment_method=payment_method,
+        )
         
-        discount = Decimal("0")
-        if 'applied_coupon' in request.session:
-            coupon_code = request.session['applied_coupon']
-            try:
-                coupon = Coupon.objects.get(code=coupon_code)
-                if coupon.discount_type == 'percentage':
-                    discount = (subtotal * Decimal(str(coupon.discount_value))) / Decimal("100")
-                else:
-                    discount = Decimal(str(coupon.discount_value))
-            except Coupon.DoesNotExist:
-                pass
-        
-        total = subtotal + shipping_cost + tax - discount
+        if pricing['total'] <= 0:
+            messages.error(request, 'Unable to calculate a payable total for this order.')
+            return redirect('orders:checkout')
         
         # Get affiliate code
         affiliate_code = request.GET.get('ref') or request.COOKIES.get('affiliate_code')
@@ -307,12 +400,12 @@ def create_order(request):
                     user=request.user,
                     status='pending',
                     payment_status='pending',
-                    payment_method='razorpay',
-                    subtotal=subtotal,
-                    shipping_cost=shipping_cost,
-                    tax=tax,
-                    discount=discount,
-                    total=total,
+                    payment_method=payment_method,
+                    subtotal=pricing['subtotal'],
+                    shipping_cost=pricing['shipping'],
+                    tax=pricing['tax'],
+                    discount=pricing['discount'],
+                    total=pricing['total'],
                     shipping_first_name=address.first_name,
                     shipping_last_name=address.last_name,
                     shipping_phone=address.phone,
@@ -339,7 +432,7 @@ def create_order(request):
                 
                 # Create Razorpay Order
                 razorpay_order = razorpay_client.order.create({
-                    'amount': int(total * 100),  # Amount in paise
+                    'amount': int(pricing['total'] * 100),  # Amount in paise
                     'currency': 'INR',
                     'payment_capture': '1',
                     'notes': {
@@ -407,7 +500,7 @@ def payment_page(request, order_id):
         'user_phone': order.shipping_phone,
     }
     
-    return render(request, 'orders/payment.html', context)
+    return render(request, 'payments/payment.html', context)
 
 
 
@@ -443,6 +536,11 @@ def payment_callback(request):
                 order.razorpay_signature = signature
                 order.status = 'confirmed'
                 order.save()
+
+                try:
+                    order.send_order_confirmation_email()
+                except Exception as exc:
+                    logger.warning("Failed to send order confirmation email for order %s: %s", order.id, exc)
                 
                 # Clear cart
                 cart = Cart.objects.filter(user=order.user).first()
@@ -470,7 +568,12 @@ def payment_callback(request):
 def order_success(request, order_id):
     """Display order success page"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    context = {'order': order}
+    gst_percent = (GST_RATE * Decimal('100')).quantize(Decimal('0.01'))
+    context = {
+        'order': order,
+        'order_items': order.items.select_related('product'),
+        'gst_rate_percent': gst_percent,
+    }
     return render(request, 'orders/order_success.html', context)
 
 
@@ -612,6 +715,48 @@ def download_invoice(request, order_id):
 # ============================================================================
 # AJAX VIEWS
 # ============================================================================
+
+
+@login_required
+@require_POST
+def shipping_quote(request):
+    """Return live shipping quote and totals for selected address"""
+    cart = get_or_create_cart(request)
+    cart_items = list(cart.orderitems.select_related('product'))
+    if not cart_items:
+        return JsonResponse({'error': 'Cart is empty'}, status=400)
+
+    try:
+        payload = json.loads(request.body.decode('utf-8'))
+    except (AttributeError, ValueError, TypeError):
+        payload = request.POST
+
+    address_id = payload.get('address_id')
+    if not address_id:
+        return JsonResponse({'error': 'address_id is required'}, status=400)
+
+    payment_method = payload.get('payment_method', 'upi')
+    address = get_object_or_404(Address, id=address_id, user=request.user, is_active=True)
+
+    pricing = _calculate_order_pricing(
+        cart_items,
+        request=request,
+        postal_code=address.postal_code,
+        payment_method=payment_method,
+    )
+
+    data = {
+        'subtotal': _decimal_to_str(pricing['subtotal']),
+        'shipping': _decimal_to_str(pricing['shipping']),
+        'tax': _decimal_to_str(pricing['tax']),
+        'discount': _decimal_to_str(pricing['discount']),
+        'total': _decimal_to_str(pricing['total']),
+        'postal_code': address.postal_code,
+        'estimated': False,
+        'coupon': pricing['coupon'].code if pricing['coupon'] else None,
+    }
+    return JsonResponse(data)
+
 
 @require_POST
 def add_to_cart_ajax(request, product_id):

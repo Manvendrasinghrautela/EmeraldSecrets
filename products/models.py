@@ -3,6 +3,7 @@ Products App Models - Updated with Email Notification and Review Model
 Contains models for Categories, Products, Collections, Product Images, and Reviews
 """
 
+from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -103,6 +104,12 @@ class Product(models.Model):
     # Inventory
     stock = models.PositiveIntegerField(default=0)
     sku = models.CharField(max_length=100, unique=True, blank=True)
+    shipping_weight_grams = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=Decimal('250.00'),
+        help_text="Weight per unit (in grams) used for live shipping calculations"
+    )
     
     # Product Details
     size = models.CharField(max_length=50, choices=SIZE_CHOICES, default='100ml')

@@ -169,6 +169,19 @@
         padding-top: 1rem;
     }
     
+    .shipping-note {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .coupon-info {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #2D5F3F;
+        font-weight: 600;
+    }
+    
     .checkout-btn {
         width: 100%;
         margin-top: 1.5rem;
@@ -326,14 +339,35 @@
             </div>
             
             <div class="summary-row">
-                <span>Tax (18%)</span>
+                <span>GST ({{ gst_rate_percent }}%)</span>
                 <span>₹{{ tax|floatformat:2 }}</span>
             </div>
+
+            {% if discount and discount|floatformat:2 != "0.00" %}
+            <div class="summary-row">
+                <span>Discount</span>
+                <span>-₹{{ discount|floatformat:2 }}</span>
+            </div>
+            {% endif %}
             
             <div class="summary-row total">
                 <span>Total</span>
                 <span>₹{{ total|floatformat:2 }}</span>
             </div>
+
+            <p class="shipping-note">
+                {% if shipping_estimated %}
+                    Shipping shown is estimated. Live Delhivery rates will apply after you confirm your address at checkout.
+                {% else %}
+                    Shipping calculated via Delhivery for PIN {{ shipping_pin }}.
+                {% endif %}
+            </p>
+
+            {% if applied_coupon %}
+            <p class="coupon-info">
+                Coupon <strong>{{ applied_coupon.code }}</strong> applied.
+            </p>
+            {% endif %}
             
             <a href="{% url 'orders:checkout' %}" class="checkout-btn">
                 Proceed to Checkout
