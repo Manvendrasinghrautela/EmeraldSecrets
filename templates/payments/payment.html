@@ -1,24 +1,180 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+/* Payment Page Styles */
+.payment-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    text-align: center;
+}
+
+.payment-icon {
+    width: 80px;
+    height: 80px;
+    background: #d1fae5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin: 0 auto 30px;
+}
+
+.payment-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 10px;
+}
+
+.payment-order-number {
+    font-size: 16px;
+    color: #6b7280;
+    margin-bottom: 40px;
+}
+
+.amount-section {
+    background: #f9fafb;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.amount-label {
+    font-size: 14px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.amount-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.razorpay-button {
+    width: 100%;
+    padding: 16px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.razorpay-button:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+.razorpay-button .icon {
+    font-size: 20px;
+}
+
+.security-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.trust-badge {
+    text-align: center;
+}
+
+.trust-badge-icon {
+    width: 50px;
+    height: 50px;
+    background: #eff6ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 10px;
+}
+
+.trust-badge-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.trust-badge-desc {
+    font-size: 11px;
+    color: #6b7280;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3>Complete Your Payment</h3>
-                    <p class="mt-3">Order #{{ order.order_number }}</p>
-                    <h2 class="text-primary">₹{{ order.total|floatformat:2 }}</h2>
-                    
-                    <button id="rzp-button" class="btn btn-lg btn-success mt-4">
-                        Pay Now with Razorpay
-                    </button>
-                    
-                    <p class="mt-3 text-muted">
-                        <small>Secured by Razorpay</small>
-                    </p>
-                </div>
-            </div>
+<div class="payment-container">
+    <div class="payment-icon">💳</div>
+    
+    <h1 class="payment-title">Complete Your Payment</h1>
+    <p class="payment-order-number">Order #{{ order.order_number }}</p>
+    
+    <div class="amount-section">
+        <div class="amount-label">Amount to Pay</div>
+        <div class="amount-value">₹{{ order.total|floatformat:2 }}</div>
+    </div>
+    
+    <button type="button" id="rzp-button1" class="razorpay-button">
+        <span class="icon">💳</span>
+        Pay Now with Razorpay
+    </button>
+    
+    <div class="security-note">
+        <span>🔒</span>
+        Secured by Razorpay
+    </div>
+    
+    <div class="trust-badges">
+        <div class="trust-badge">
+            <div class="trust-badge-icon">🔒</div>
+            <div class="trust-badge-title">Secure Payment</div>
+            <div class="trust-badge-desc">256-bit SSL encrypted</div>
+        </div>
+        
+        <div class="trust-badge">
+            <div class="trust-badge-icon">🛡️</div>
+            <div class="trust-badge-title">Safe & Trusted</div>
+            <div class="trust-badge-desc">PCI DSS compliant</div>
+        </div>
+        
+        <div class="trust-badge">
+            <div class="trust-badge-icon">💳</div>
+            <div class="trust-badge-title">Multiple Options</div>
+            <div class="trust-badge-desc">Cards, UPI, Wallets</div>
         </div>
     </div>
 </div>
@@ -29,28 +185,37 @@ var options = {
     "key": "{{ razorpay_key_id }}",
     "amount": "{{ amount }}",
     "currency": "{{ currency }}",
-    "name": "Emerald Secrets",
+    "name": "{{ site_name|default:'Emerald Secrets' }}",
     "description": "Order #{{ order.order_number }}",
     "order_id": "{{ razorpay_order_id }}",
     "handler": function (response){
-        // Create form and submit
         var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '{% url "orders:payment_callback" %}';
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '{% url "orders:payment_callback" %}');
         
-        var fields = {
-            'razorpay_payment_id': response.razorpay_payment_id,
-            'razorpay_order_id': response.razorpay_order_id,
-            'razorpay_signature': response.razorpay_signature
-        };
+        var csrf = document.createElement('input');
+        csrf.setAttribute('type', 'hidden');
+        csrf.setAttribute('name', 'csrfmiddlewaretoken');
+        csrf.setAttribute('value', '{{ csrf_token }}');
+        form.appendChild(csrf);
         
-        for(var key in fields) {
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = key;
-            input.value = fields[key];
-            form.appendChild(input);
-        }
+        var payment_id = document.createElement('input');
+        payment_id.setAttribute('type', 'hidden');
+        payment_id.setAttribute('name', 'razorpay_payment_id');
+        payment_id.setAttribute('value', response.razorpay_payment_id);
+        form.appendChild(payment_id);
+        
+        var order_id = document.createElement('input');
+        order_id.setAttribute('type', 'hidden');
+        order_id.setAttribute('name', 'razorpay_order_id');
+        order_id.setAttribute('value', response.razorpay_order_id);
+        form.appendChild(order_id);
+        
+        var signature = document.createElement('input');
+        signature.setAttribute('type', 'hidden');
+        signature.setAttribute('name', 'razorpay_signature');
+        signature.setAttribute('value', response.razorpay_signature);
+        form.appendChild(signature);
         
         document.body.appendChild(form);
         form.submit();
@@ -61,19 +226,15 @@ var options = {
         "contact": "{{ user_phone }}"
     },
     "theme": {
-        "color": "#2D7A6E"
+        "color": "#10b981"
     }
 };
 
-var rzp = new Razorpay(options);
+var rzp1 = new Razorpay(options);
 
-// Auto-open payment on page load
-document.getElementById('rzp-button').onclick = function(e){
-    rzp.open();
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
     e.preventDefault();
 }
-
-// Optionally auto-open on page load
-// rzp.open();
 </script>
 {% endblock %}

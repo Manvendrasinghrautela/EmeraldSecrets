@@ -2,132 +2,323 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/orders.css' %}">
+<style>
+/* Modern Order Detail Page */
+.order-detail-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+}
+
+/* Header Section */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.order-number {
+    font-size: 16px;
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+.status-badge {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.confirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.delivered {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Info Grid */
+.order-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+    padding: 30px;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.info-block h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.info-content {
+    font-size: 15px;
+    color: #111827;
+    line-height: 1.8;
+}
+
+.info-content .icon {
+    margin-right: 8px;
+    color: #10b981;
+}
+
+.shipping-address {
+    line-height: 1.6;
+}
+
+/* Order Items Section */
+.order-items-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 20px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.item-sku {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.item-quantity {
+    font-size: 15px;
+    color: #6b7280;
+    margin-right: 30px;
+}
+
+.item-price {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Order Summary Box */
+.order-summary-box {
+    background: #f9fafb;
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 30px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 15px;
+}
+
+.summary-row .label {
+    color: #6b7280;
+}
+
+.summary-row .value {
+    color: #111827;
+    font-weight: 500;
+}
+
+.summary-row.discount .value {
+    color: #10b981;
+}
+
+.summary-row.total {
+    border-top: 2px solid #d1d5db;
+    margin-top: 12px;
+    padding-top: 16px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.summary-row.total .label,
+.summary-row.total .value {
+    color: #111827;
+}
+
+/* Shipping Note */
+.shipping-note {
+    margin-top: 20px;
+    padding: 16px;
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1e40af;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .order-info-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .order-item {
+        flex-wrap: wrap;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="order-detail-section">
-    <div class="order-detail-container">
-        <div class="order-header">
-            <div>
-                <h1>Order #{{ order.order_number }}</h1>
-                <p class="order-date">Placed on {{ order.created_at|date:"M d, Y at g:i A" }}</p>
-            </div>
-            <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
+<div class="order-detail-container">
+    <!-- Header -->
+    <div class="order-header">
+        <div>
+            <h1>Order Details</h1>
+            <p class="order-number">Order #{{ order.order_number }}</p>
         </div>
+        <span class="status-badge {{ order.status|lower }}">{{ order.get_status_display }}</span>
+    </div>
 
-        <!-- Order Progress -->
-        <div class="order-progress">
-            <div class="progress-step {% if order.status == 'pending' or order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
-                <div class="step-icon">✓</div>
-                <div class="step-label">Order Placed</div>
-            </div>
-            <div class="progress-line {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}"></div>
-            <div class="progress-step {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
-                <div class="step-icon">📦</div>
-                <div class="step-label">Processing</div>
-            </div>
-            <div class="progress-line {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}"></div>
-            <div class="progress-step {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
-                <div class="step-icon">🚚</div>
-                <div class="step-label">Shipped</div>
-            </div>
-            <div class="progress-line {% if order.status == 'delivered' %}active{% endif %}"></div>
-            <div class="progress-step {% if order.status == 'delivered' %}active{% endif %}">
-                <div class="step-icon">✓</div>
-                <div class="step-label">Delivered</div>
+    <!-- Order Info Grid -->
+    <div class="order-info-grid">
+        <!-- Placed On -->
+        <div class="info-block">
+            <h3><span class="icon">📦</span> Placed On</h3>
+            <div class="info-content">
+                {{ order.created_at|date:"F d, Y h:i A" }}
             </div>
         </div>
 
-        <!-- Order Items -->
-        <div class="order-items-section">
-            <h2>Order Items</h2>
-            {% for item in order_items %}
-            <div class="order-item">
-                {% if item.product and item.product.image %}
-                <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}">
-                {% else %}
-                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product_name }}">
-                {% endif %}
-                <div class="item-info">
-                    <h3>{{ item.product_name }}</h3>
-                    <p>Quantity: {{ item.quantity }}</p>
-                    <p class="item-price">₹{{ item.price }} × {{ item.quantity }} = ₹{{ item.total_price }}</p>
-                </div>
-                <div class="item-total">₹{{ item.total_price }}</div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Order Summary & Address -->
-        <div class="order-bottom-section">
-            <div class="shipping-address">
-                <h2>Shipping Address</h2>
-                <div class="address-box">
-                    <p><strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong></p>
-                    <p>{{ order.shipping_address_line1 }}</p>
-                    {% if order.shipping_address_line2 %}
-                    <p>{{ order.shipping_address_line2 }}</p>
-                    {% endif %}
-                    <p>{{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_postal_code }}</p>
-                    <p>{{ order.shipping_country }}</p>
-                    <p>Phone: {{ order.shipping_phone }}</p>
-                    <p>Email: {{ order.shipping_email }}</p>
-                </div>
-            </div>
-
-            <div class="order-summary-box">
-                <h2>Order Summary</h2>
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span>₹{{ order.subtotal|floatformat:2 }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Shipping</span>
-                    <span>₹{{ order.shipping_cost|floatformat:2 }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Tax</span>
-                    <span>₹{{ order.tax|floatformat:2 }}</span>
-                </div>
-                {% if order.discount %}
-                <div class="summary-row">
-                    <span>Discount</span>
-                    <span>-₹{{ order.discount|floatformat:2 }}</span>
-                </div>
-                {% endif %}
-                <div class="summary-total">
-                    <span>Total</span>
-                    <span>₹{{ order.total|floatformat:2 }}</span>
-                </div>
+        <!-- Shipping Address -->
+        <div class="info-block">
+            <h3><span class="icon">📍</span> Shipping Address</h3>
+            <div class="info-content shipping-address">
+                <strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong><br>
+                {{ order.shipping_address_line1 }}<br>
+                {% if order.shipping_address_line2 %}{{ order.shipping_address_line2 }}<br>{% endif %}
+                {{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_postal_code }}<br>
+                {{ order.shipping_country }}
             </div>
         </div>
 
-        <!-- Payment Information -->
-        {% if payments %}
-        <div class="payment-info">
-            <h2>Payment Information</h2>
-            {% for payment in payments %}
-            <div class="payment-details">
-                <p><strong>Payment Method:</strong> {{ payment.get_payment_method_display }}</p>
-                <p><strong>Status:</strong> {{ payment.get_payment_status_display }}</p>
-                <p><strong>Amount:</strong> ₹{{ payment.amount|floatformat:2 }}</p>
-                {% if payment.transaction_id %}
-                <p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
+        <!-- Payment Method -->
+        <div class="info-block">
+            <h3><span class="icon">💳</span> Payment Method</h3>
+            <div class="info-content">
+                {{ order.get_payment_method_display|upper }}<br>
+                {% if order.razorpay_payment_id %}
+                <small style="color: #6b7280;">ID: {{ order.razorpay_payment_id }}</small>
                 {% endif %}
             </div>
-            {% endfor %}
         </div>
-        {% endif %}
 
-        <div class="order-actions">
-            <a href="{% url 'orders:order_list' %}" class="btn btn-secondary">Back to Orders</a>
-            {% if order.status != 'cancelled' %}
-            <a href="{% url 'orders:download_invoice' order.id %}" class="btn btn-outline">Download Invoice</a>
-            {% endif %}
+        <!-- Contact -->
+        <div class="info-block">
+            <h3><span class="icon">📞</span> Contact</h3>
+            <div class="info-content">
+                {{ order.shipping_phone }}<br>
+                <span class="icon">✉️</span> {{ order.shipping_email }}
+            </div>
         </div>
     </div>
-</section>
+
+    <!-- Items Section -->
+    <div class="order-items-section">
+        <h2 class="section-title">Items in Your Order</h2>
+        
+        {% for item in order.items.all %}
+        <div class="order-item">
+            <div class="item-details">
+                <div class="item-name">{{ item.product_name }}</div>
+                <div class="item-sku">SKU: {{ item.product_sku|default:"N/A" }}</div>
+            </div>
+            <div class="item-quantity">Qty: {{ item.quantity }}</div>
+            <div class="item-price">₹{{ item.price|floatformat:2 }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary-box">
+        <div class="summary-row">
+            <span class="label">Subtotal</span>
+            <span class="value">₹{{ order.subtotal|floatformat:2 }}</span>
+        </div>
+        
+        <div class="summary-row">
+            <span class="label">Shipping</span>
+            <span class="value">₹{{ order.shipping_cost|floatformat:2 }}</span>
+        </div>
+        
+        <div class="summary-row">
+            <span class="label">GST (18%)</span>
+            <span class="value">₹{{ order.tax|floatformat:2 }}</span>
+        </div>
+        
+        {% if order.discount > 0 %}
+        <div class="summary-row discount">
+            <span class="label">Discount</span>
+            <span class="value">-₹{{ order.discount|floatformat:2 }}</span>
+        </div>
+        {% endif %}
+        
+        <div class="summary-row total">
+            <span class="label">Grand Total</span>
+            <span class="value">₹{{ order.total|floatformat:2 }}</span>
+        </div>
+        
+        <div class="shipping-note">
+            <strong>📦 Shipping Note:</strong> Shipping charges are sourced in real-time from Delivery for PIN {{ order.shipping_postal_code }}.
+        </div>
+    </div>
+</div>
 {% endblock %}
-
-
