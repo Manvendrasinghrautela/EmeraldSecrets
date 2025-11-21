@@ -46,7 +46,17 @@ class Cart(models.Model):
 
     @property
     def total(self):
+        """
+        Calculate total: subtotal + shipping + tax
+        Note: Discount is handled in views/context because it requires session data
+        """
         return self.subtotal + self.shipping + self.tax
+        
+    def get_subtotal(self):
+        return sum(
+            item.product.price * item.quantity
+            for item in self.orderitems.select_related('product').all()
+        )
 
 
 class CartItem(models.Model):

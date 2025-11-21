@@ -4,6 +4,7 @@ Updated with email notifications configuration
 """
 
 import os
+from decimal import Decimal
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -166,6 +167,20 @@ SEND_NOTIFICATION_EMAILS = os.getenv('SEND_NOTIFICATION_EMAILS', 'True') == 'Tru
 
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', 'rzp_live_Ri4CMN9v4I2234')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', 'BUFxIIS3Lgtr00EZuB3VJ043')
+
+# ============================================================================
+# TAX & SHIPPING CONFIGURATION
+# ============================================================================
+
+GST_RATE = Decimal(os.getenv('GST_RATE', '0.18'))
+
+DELHIVERY_API_KEY = os.getenv('DELHIVERY_API_KEY', '84fcd5ad3412a8acba8d3013ec09f54c648333d1')
+DELHIVERY_RATE_URL = os.getenv('DELHIVERY_RATE_URL', 'https://track.delhivery.com/api/kinko/v1/invoice/charges/.json')
+DELHIVERY_ORIGIN_PINCODE = os.getenv('DELHIVERY_ORIGIN_PINCODE', '110001')
+DELHIVERY_DEFAULT_ITEM_WEIGHT_G = Decimal(os.getenv('DELHIVERY_DEFAULT_ITEM_WEIGHT_G', '250'))
+DELHIVERY_MIN_WEIGHT_G = Decimal(os.getenv('DELHIVERY_MIN_WEIGHT_G', '150'))
+DELHIVERY_FALLBACK_CHARGE = Decimal(os.getenv('DELHIVERY_FALLBACK_CHARGE', '65'))
+DELHIVERY_REQUEST_TIMEOUT = int(os.getenv('DELHIVERY_REQUEST_TIMEOUT', '10'))
 
 # ============================================================================
 # AFFILIATE PROGRAM SETTINGS

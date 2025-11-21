@@ -26,7 +26,7 @@ def initiate_payment(request):
         
         # Create Razorpay order
         razorpay_order = razorpay_client.order.create({
-            'amount': int(order.total_amount * 100),  # Amount in paise
+            'amount': int(order.total * 100),  # Amount in paise
             'currency': 'INR',
             'payment_capture': '1',
             'notes': {
@@ -43,7 +43,7 @@ def initiate_payment(request):
             'order': order,
             'razorpay_order_id': razorpay_order['id'],
             'razorpay_key_id': settings.RAZORPAY_KEY_ID,
-            'amount': int(order.total_amount * 100),
+            'amount': int(order.total * 100),
             'currency': 'INR',
             'user_name': request.user.get_full_name() or request.user.username,
             'user_email': request.user.email,
@@ -120,7 +120,10 @@ def payment_success(request, order_id):
     Display order confirmation and summary after successful payment
     """
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    context = {'order': order}
+    context = {
+        'order': order,
+        'order_items': order.items.select_related('product'),
+    }
     return render(request, 'payments/success.html', context)
 
 
@@ -213,18 +216,18 @@ def download_invoice(request, order_id):
     items_data = [['Product', 'Quantity', 'Price', 'Total']]
     for item in order.items.all():
         items_data.append([
-            item.product.name,
+            item.product_name,
             str(item.quantity),
             f'₹{item.price:.2f}',
-            f'₹{item.get_total():.2f}'
+            f'₹{item.total_price:.2f}'
         ])
     
     # Add totals
     items_data.append(['', '', 'Subtotal:', f'₹{order.subtotal:.2f}'])
-    if order.discount_amount > 0:
-        items_data.append(['', '', 'Discount:', f'-₹{order.discount_amount:.2f}'])
+    if order.discount > 0:
+        items_data.append(['', '', 'Discount:', f'-₹{order.discount:.2f}'])
     items_data.append(['', '', 'Shipping:', f'₹{order.shipping_cost:.2f}'])
-    items_data.append(['', '', '<b>Total:</b>', f'<b>₹{order.total_amount:.2f}</b>'])
+    items_data.append(['', '', '<b>Total:</b>', f'<b>₹{order.total:.2f}</b>'])
     
     items_table = Table(items_data, colWidths=[3*inch, 1*inch, 1.5*inch, 1.5*inch])
     items_table.setStyle(TableStyle([
@@ -268,7 +271,10 @@ def download_invoice(request, order_id):
 def send_order_confirmation_email(order):
     """Send order confirmation email to customer"""
     subject = f'Order Confirmation - {order.id}'
-    html_message = render_to_string('emails/order_confirmation.html', {'order': order})
+    html_message = render_to_string('emails/order_confirmation.html', {
+        'order': order,
+        'order_items': order.items.all(),
+    })
     
     send_mail(
         subject,
@@ -288,7 +294,7 @@ def send_admin_notification_email(order):
     
     Order ID: {order.id}
     Customer: {order.user.get_full_name() or order.user.username}
-    Amount: ₹{order.total_amount}
+    Amount: ₹{order.total}
     Payment Status: {order.payment_status}
     
     View order in admin panel.

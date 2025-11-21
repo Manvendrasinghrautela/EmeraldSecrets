@@ -12,7 +12,7 @@
 <div class="highlight-box">
     <p><strong>Order Number:</strong> #{{ order.id }}</p>
     <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
-    <p><strong>Order Total:</strong> ₹{{ order.total_amount }}</p>
+    <p><strong>Order Total:</strong> ₹{{ order.total|floatformat:2 }}</p>
 </div>
 
 <h2 style="font-size: 18px; margin-top: 30px; margin-bottom: 15px;">Order Items</h2>
@@ -26,37 +26,37 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in order.items.all %}
+        {% for item in order_items %}
         <tr>
-            <td style="padding: 12px; border-bottom: 1px solid #E5E5E5;">{{ item.product.name }}</td>
+            <td style="padding: 12px; border-bottom: 1px solid #E5E5E5;">{{ item.product_name }}</td>
             <td style="padding: 12px; text-align: center; border-bottom: 1px solid #E5E5E5;">{{ item.quantity }}</td>
-            <td style="padding: 12px; text-align: right; border-bottom: 1px solid #E5E5E5;">₹{{ item.total }}</td>
+            <td style="padding: 12px; text-align: right; border-bottom: 1px solid #E5E5E5;">₹{{ item.total_price|floatformat:2 }}</td>
         </tr>
         {% endfor %}
         <tr>
             <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Subtotal:</td>
-            <td style="padding: 12px; text-align: right;">₹{{ order.subtotal }}</td>
+            <td style="padding: 12px; text-align: right;">₹{{ order.subtotal|floatformat:2 }}</td>
         </tr>
         <tr>
             <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold;">Shipping:</td>
-            <td style="padding: 12px; text-align: right;">₹{{ order.shipping_fee }}</td>
+            <td style="padding: 12px; text-align: right;">₹{{ order.shipping_cost|floatformat:2 }}</td>
         </tr>
         <tr style="background-color: #F5F3F1;">
             <td colspan="2" style="padding: 12px; text-align: right; font-weight: bold; font-size: 16px;">Total:</td>
-            <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 16px;">₹{{ order.total_amount }}</td>
+            <td style="padding: 12px; text-align: right; font-weight: bold; font-size: 16px;">₹{{ order.total|floatformat:2 }}</td>
         </tr>
     </tbody>
 </table>
 
 <h2 style="font-size: 18px; margin-top: 30px; margin-bottom: 15px;">Shipping Address</h2>
 <div class="highlight-box">
-    <p>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</p>
-    <p>{{ order.shipping_address.address_line1 }}</p>
-    {% if order.shipping_address.address_line2 %}
-    <p>{{ order.shipping_address.address_line2 }}</p>
+    <p>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</p>
+    <p>{{ order.shipping_address_line1 }}</p>
+    {% if order.shipping_address_line2 %}
+    <p>{{ order.shipping_address_line2 }}</p>
     {% endif %}
-    <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} - {{ order.shipping_address.postal_code }}</p>
-    <p>Phone: {{ order.shipping_address.phone }}</p>
+    <p>{{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_postal_code }}</p>
+    <p>Phone: {{ order.shipping_phone }}</p>
 </div>
 
 <center>

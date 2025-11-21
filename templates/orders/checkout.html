@@ -53,6 +53,11 @@
     font-weight: 600;
     color: #333;
 }
+.shipping-note {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 0.35rem;
+}
 /* Error Messages */
 .error-message {
     background: #fee;
@@ -355,51 +360,132 @@
 
                 <div class="total-row">
                     <span class="label">Shipping:</span>
-                    <span class="value">₹{{ shipping|floatformat:2 }}</span>
+                    <span class="value" id="shippingValue">₹{{ shipping|floatformat:2 }}</span>
                 </div>
 
                 <div class="total-row">
-                    <span class="label">Tax (6.65%):</span>
-                    <span class="value">₹{{ tax|floatformat:2 }}</span>
+                    <span class="label">GST ({{ gst_rate_percent }}%):</span>
+                    <span class="value" id="taxValue">₹{{ tax|floatformat:2 }}</span>
                 </div>
 
-                {% if discount %}
-                <div class="total-row discount">
+                <div class="total-row discount" id="discountRow" {% if not discount %}style="display:none"{% endif %}>
                     <span class="label">Discount:</span>
-                    <span class="value">-₹{{ discount|floatformat:2 }}</span>
+                    <span class="value" id="discountValue">-₹{{ discount|floatformat:2 }}</span>
                 </div>
-                {% endif %}
 
                 <div class="total-row total">
                     <span class="label"><strong>Total:</strong></span>
-                    <span class="value"><strong>₹{{ total|floatformat:2 }}</strong></span>
+                    <span class="value" id="totalValue"><strong>₹{{ total|floatformat:2 }}</strong></span>
                 </div>
+
+                <p class="shipping-note" id="shippingNote">
+                    {% if shipping_estimated %}
+                        Shipping will update after you pick an address so we can fetch live Delhivery rates.
+                    {% else %}
+                        Shipping calculated via Delhivery for PIN {{ shipping_pin }}.
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <script>
-// Client-side validation
-document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-    const selectedAddress = document.querySelector('input[name="address"]:checked');
-    const addressError = document.getElementById('addressError');
-    
-    if (!selectedAddress) {
-        e.preventDefault();
-        addressError.style.display = 'block';
-        return false;
-    }
-    
-    addressError.style.display = 'none';
-    return true;
-});
+const checkoutForm = document.getElementById('checkoutForm');
+const addressError = document.getElementById('addressError');
 
-// Hide error message when address is selected
-document.querySelectorAll('.addressRadio').forEach(radio => {
-    radio.addEventListener('change', function() {
-        document.getElementById('addressError').style.display = 'none';
+// Client-side validation
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function(e) {
+        const selectedAddress = document.querySelector('input[name="address"]:checked');
+        
+        if (!selectedAddress) {
+            e.preventDefault();
+            addressError.style.display = 'block';
+            return false;
+        }
+        
+        addressError.style.display = 'none';
+        return true;
     });
-});
+}
+
+const addressRadios = document.querySelectorAll('.addressRadio');
+if (addressRadios.length) {
+    addressRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            addressError.style.display = 'none';
+            fetchShippingQuote();
+        });
+    });
+}
+
+const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+if (paymentMethodRadios.length) {
+    paymentMethodRadios.forEach(radio => {
+        radio.addEventListener('change', fetchShippingQuote);
+    });
+}
+
+const shippingQuoteUrl = "{% url 'orders:shipping_quote' %}";
+const shippingValueEl = document.getElementById('shippingValue');
+const taxValueEl = document.getElementById('taxValue');
+const totalValueEl = document.getElementById('totalValue');
+const discountRowEl = document.getElementById('discountRow');
+const discountValueEl = document.getElementById('discountValue');
+const shippingNoteEl = document.getElementById('shippingNote');
+
+function fetchShippingQuote() {
+    const addressRadio = document.querySelector('input[name="address"]:checked');
+    const paymentRadio = document.querySelector('input[name="payment_method"]:checked');
+    if (!addressRadio || !paymentRadio) {
+        return;
+    }
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    fetch(shippingQuoteUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            address_id: addressRadio.value,
+            payment_method: paymentRadio.value
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => { throw new Error(data.error || 'Unable to fetch shipping quote'); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        shippingValueEl.textContent = `₹${data.shipping}`;
+        taxValueEl.textContent = `₹${data.tax}`;
+        totalValueEl.textContent = `₹${data.total}`;
+
+        if (parseFloat(data.discount) > 0) {
+            discountValueEl.textContent = `-₹${data.discount}`;
+            discountRowEl.style.display = 'flex';
+        } else {
+            discountRowEl.style.display = 'none';
+        }
+
+        if (shippingNoteEl) {
+            shippingNoteEl.textContent = `Shipping calculated via Delhivery for PIN ${data.postal_code}`;
+        }
+    })
+    .catch(error => {
+        console.error('Shipping quote error:', error);
+    });
+}
+
+if (addressRadios.length) {
+    window.addEventListener('load', fetchShippingQuote);
+}
 </script>
 {% endblock %}

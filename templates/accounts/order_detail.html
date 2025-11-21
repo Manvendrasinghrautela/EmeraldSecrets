@@ -10,25 +10,24 @@
     <div class="order-detail-container">
         <div class="order-header">
             <div>
-                <h1>Order #{{ order.id }}</h1>
+                <h1>Order #{{ order.order_number }}</h1>
                 <p class="order-date">Placed on {{ order.created_at|date:"M d, Y at g:i A" }}</p>
             </div>
             <span class="order-status {{ order.status }}">{{ order.get_status_display }}</span>
         </div>
 
-        <!-- Order Progress -->
         <div class="order-progress">
-            <div class="progress-step {% if order.status == 'pending' or order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
+            <div class="progress-step {% if order.status in 'pending processing shipped delivered' %}active{% endif %}">
                 <div class="step-icon">✓</div>
                 <div class="step-label">Order Placed</div>
             </div>
-            <div class="progress-line {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}"></div>
-            <div class="progress-step {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
+            <div class="progress-line {% if order.status in 'processing shipped delivered' %}active{% endif %}"></div>
+            <div class="progress-step {% if order.status in 'processing shipped delivered' %}active{% endif %}">
                 <div class="step-icon">📦</div>
                 <div class="step-label">Processing</div>
             </div>
-            <div class="progress-line {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}"></div>
-            <div class="progress-step {% if order.status == 'shipped' or order.status == 'delivered' %}active{% endif %}">
+            <div class="progress-line {% if order.status in 'shipped delivered' %}active{% endif %}"></div>
+            <div class="progress-step {% if order.status in 'shipped delivered' %}active{% endif %}">
                 <div class="step-icon">🚚</div>
                 <div class="step-label">Shipped</div>
             </div>
@@ -39,34 +38,38 @@
             </div>
         </div>
 
-        <!-- Order Items -->
         <div class="order-items-section">
             <h2>Order Items</h2>
-            {% for item in order.items.all %}
+            {% for item in order_items %}
             <div class="order-item">
-                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                {% if item.product and item.product.main_image %}
+                <img src="{{ item.product.main_image.url }}" alt="{{ item.product_name }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="{{ item.product_name }}">
+                {% endif %}
                 <div class="item-info">
-                    <h3>{{ item.product.name }}</h3>
+                    <h3>{{ item.product_name }}</h3>
                     <p>Quantity: {{ item.quantity }}</p>
-                    <p class="item-price">₹{{ item.product.price }} × {{ item.quantity }}</p>
+                    <p class="item-price">₹{{ item.price }} × {{ item.quantity }} = ₹{{ item.total_price }}</p>
                 </div>
-                <div class="item-total">₹{{ item.total }}</div>
+                <div class="item-total">₹{{ item.total_price }}</div>
             </div>
             {% endfor %}
         </div>
 
-        <!-- Order Summary & Address -->
         <div class="order-bottom-section">
             <div class="shipping-address">
                 <h2>Shipping Address</h2>
                 <div class="address-box">
-                    <p><strong>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</strong></p>
-                    <p>{{ order.shipping_address.address_line1 }}</p>
-                    {% if order.shipping_address.address_line2 %}
-                    <p>{{ order.shipping_address.address_line2 }}</p>
+                    <p><strong>{{ order.shipping_first_name }} {{ order.shipping_last_name }}</strong></p>
+                    <p>{{ order.shipping_address_line1 }}</p>
+                    {% if order.shipping_address_line2 %}
+                    <p>{{ order.shipping_address_line2 }}</p>
                     {% endif %}
-                    <p>{{ order.shipping_address.city }}, {{ order.shipping_address.state }} - {{ order.shipping_address.postal_code }}</p>
-                    <p>Phone: {{ order.shipping_address.phone }}</p>
+                    <p>{{ order.shipping_city }}, {{ order.shipping_state }} - {{ order.shipping_postal_code }}</p>
+                    <p>{{ order.shipping_country }}</p>
+                    <p>Phone: {{ order.shipping_phone }}</p>
+                    <p>Email: {{ order.shipping_email }}</p>
                 </div>
             </div>
 
@@ -74,37 +77,36 @@
                 <h2>Order Summary</h2>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span>₹{{ order.subtotal }}</span>
+                    <span>₹{{ order.subtotal|floatformat:2 }}</span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
-                    <span>₹{{ order.shipping_fee }}</span>
+                    <span>₹{{ order.shipping_cost|floatformat:2 }}</span>
                 </div>
                 <div class="summary-row">
                     <span>Tax</span>
-                    <span>₹{{ order.tax }}</span>
+                    <span>₹{{ order.tax|floatformat:2 }}</span>
                 </div>
+                {% if order.discount %}
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span>-₹{{ order.discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
                 <div class="summary-total">
                     <span>Total</span>
-                    <span>₹{{ order.total_amount }}</span>
+                    <span>₹{{ order.total|floatformat:2 }}</span>
                 </div>
             </div>
         </div>
 
-        {% if order.tracking_number %}
-        <div class="tracking-info">
-            <h2>Tracking Information</h2>
-            <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
-            <a href="#" class="btn btn-outline">Track Shipment</a>
-        </div>
-        {% endif %}
-
         <div class="order-actions">
             <a href="{% url 'accounts:order_list' %}" class="btn btn-secondary">Back to Orders</a>
             {% if order.status != 'cancelled' %}
-            <button onclick="window.print()" class="btn btn-outline">Print Invoice</button>
+            <a href="{% url 'orders:download_invoice' order.id %}" class="btn btn-outline">Download Invoice</a>
             {% endif %}
         </div>
     </div>
 </section>
 {% endblock %}
+

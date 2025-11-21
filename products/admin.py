@@ -75,7 +75,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('price', 'compare_at_price', 'cost_price', 'stock')
         }),
         ('Product Details', {
-            'fields': ('size', 'origin', 'shelf_life')
+            'fields': ('size', 'origin', 'shelf_life', 'shipping_weight_grams')
         }),
         ('Media', {
             'fields': ('main_image',)
