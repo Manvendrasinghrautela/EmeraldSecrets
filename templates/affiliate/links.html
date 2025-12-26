@@ -674,7 +674,7 @@ function copyLinkToClipboard(inputElement) {
     
     if (navigator.clipboard) {
         navigator.clipboard.writeText(inputElement.value).then(() => {
-            showNotification('✅ Link copied to clipboard!');
+            showNotification('Link copied to clipboard!');
         }).catch(() => {
             fallbackCopy(inputElement);
         });

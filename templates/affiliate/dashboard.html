@@ -480,16 +480,16 @@
     <!-- Quick Actions -->
     <div class="quick-actions">
         <a href="{% url 'affiliate:links' %}" class="action-btn">
-            🔗 Get Referral Link
+            Get Referral Link
         </a>
         <a href="{% url 'affiliate:stats' %}" class="action-btn">
-            📊 View Statistics
+            View Statistics
         </a>
         <a href="{% url 'affiliate:withdrawals' %}" class="action-btn primary">
-            💰 Request Withdrawal
+            Request Withdrawal
         </a>
         <a href="{% url 'affiliate:settings' %}" class="action-btn">
-            ⚙️ Update Settings
+            Update Settings
         </a>
     </div>
 
@@ -497,7 +497,7 @@
     <div class="stats-grid">
         <!-- Total Clicks -->
         <div class="stat-card">
-            <div class="stat-icon">👁️</div>
+            <!-- <div class="stat-icon">👁️</div> -->
             <div class="stat-change">{{ affiliate.created_at|timesince }} ago</div>
             <div class="stat-label">Total Clicks</div>
             <div class="stat-value">{{ total_clicks }}</div>
@@ -505,7 +505,7 @@
 
         <!-- Total Orders -->
         <div class="stat-card">
-            <div class="stat-icon">🛍️</div>
+            <!-- <div class="stat-icon">🛍️</div> -->
             <div class="stat-change">{{ total_orders }} conversions</div>
             <div class="stat-label">Total Orders</div>
             <div class="stat-value">₹{{ total_sales }}</div>
@@ -513,7 +513,7 @@
 
         <!-- Conversion Rate -->
         <div class="stat-card">
-            <div class="stat-icon">📈</div>
+            <!-- <div class="stat-icon">📈</div> -->
             <div class="stat-change">{% if conversion_rate > 5 %}+{% endif %}{{ conversion_rate }}%</div>
             <div class="stat-label">Conversion Rate</div>
             <div class="stat-value">{{ conversion_rate }}%</div>
@@ -521,7 +521,7 @@
 
         <!-- Available Balance -->
         <div class="stat-card">
-            <div class="stat-icon">💳</div>
+            <!-- <div class="stat-icon">💳</div> -->
             <div class="stat-change">Ready to withdraw</div>
             <div class="stat-label">Available Balance</div>
             <div class="stat-value">₹{{ available_for_withdrawal }}</div>
