@@ -3,166 +3,333 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+<style>
+    /* Performance Statistics Page */
+    .stats-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--color-text);
+    }
+
+    .page-description {
+        font-size: 16px;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Time Filter */
+    .filter-section {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 40px;
+        align-items: center;
+    }
+
+    .filter-section select {
+        padding: 10px 16px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-base);
+        background: var(--color-surface);
+        color: var(--color-text);
+        font-size: 14px;
+        cursor: pointer;
+        min-width: 200px;
+    }
+
+    .filter-section select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--focus-ring);
+    }
+
+    /* Stats Grid - 4 Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        transition: all var(--duration-normal) var(--ease-standard);
+    }
+
+    .stat-card:hover {
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-card-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .stat-change {
+        font-size: 12px;
+        color: var(--color-success);
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .stat-change.negative {
+        color: var(--color-error);
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: 8px;
+    }
+
+    /* Charts Section */
+    .charts-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+
+    .chart-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+    }
+
+    .chart-card h3 {
+        margin: 0 0 20px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    .chart-placeholder {
+        height: 300px;
+        background: var(--color-background);
+        border-radius: var(--radius-base);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-secondary);
+        font-size: 14px;
+    }
+
+    /* Performance Breakdown */
+    .performance-section {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        margin-bottom: 40px;
+    }
+
+    .performance-section h3 {
+        margin: 0 0 20px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    .performance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .performance-item {
+        padding: 16px;
+        background: var(--color-background);
+        border-radius: var(--radius-base);
+        border-left: 4px solid var(--color-primary);
+    }
+
+    .performance-label {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .performance-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-text);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .stats-container {
+            padding: 20px 16px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .charts-section {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .filter-section select {
+            width: 100%;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="affiliate-dashboard">
+<section class="stats-container">
+    <!-- Page Header -->
     <div class="page-header">
         <h1>Performance Statistics</h1>
-        <div class="date-filter">
-            <select id="dateRange">
-                <option value="7">Last 7 Days</option>
-                <option value="30" selected>Last 30 Days</option>
-                <option value="90">Last 90 Days</option>
-                <option value="365">Last Year</option>
-            </select>
-        </div>
+        <p class="page-description">Track your affiliate performance with real-time data</p>
     </div>
 
-    <!-- Key Metrics -->
+    <!-- Time Filter -->
+    <div class="filter-section">
+        <label style="font-weight: 500; color: var(--color-text);">Time Period:</label>
+        <select id="timePeriod" onchange="updateStats()">
+            <option value="7">Last 7 Days</option>
+            <option value="30" selected>Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+            <option value="365">Last Year</option>
+            <option value="all">All Time</option>
+        </select>
+    </div>
+
+    <!-- Stats Grid - 4 Cards with Real Data -->
     <div class="stats-grid">
+        <!-- Total Earnings -->
         <div class="stat-card">
-            <div class="stat-icon">💰</div>
+            <div class="stat-card-icon">💰</div>
             <div class="stat-label">Total Earnings</div>
-            <div class="stat-value">₹12,450</div>
-            <div class="stat-change positive">+15.3% from last month</div>
+            <div class="stat-value">₹{{ total_commission|default:"0.00" }}</div>
         </div>
 
+        <!-- Total Clicks -->
         <div class="stat-card">
-            <div class="stat-icon">👁️</div>
+            <div class="stat-card-icon">👁️</div>
             <div class="stat-label">Total Clicks</div>
-            <div class="stat-value">1,234</div>
-            <div class="stat-change positive">+8.2% from last month</div>
+            <div class="stat-value">{{ total_clicks|default:"0" }}</div>
         </div>
 
+        <!-- Conversions -->
         <div class="stat-card">
-            <div class="stat-icon">🛍️</div>
+            <div class="stat-card-icon">🛍️</div>
             <div class="stat-label">Conversions</div>
-            <div class="stat-value">42</div>
-            <div class="stat-change positive">+12.5% from last month</div>
+            <div class="stat-value">{{ total_orders|default:"0" }}</div>
         </div>
 
+        <!-- Conversion Rate -->
         <div class="stat-card">
-            <div class="stat-icon">📊</div>
+            <div class="stat-card-icon">📊</div>
+            
             <div class="stat-label">Conversion Rate</div>
-            <div class="stat-value">3.4%</div>
-            <div class="stat-change negative">-0.5% from last month</div>
+            <div class="stat-value">{{ conversion_rate|floatformat:1|default:"0" }}%</div>
         </div>
     </div>
 
-    <!-- Charts Section -->
-    <div class="charts-section">
-        <div class="chart-card">
-            <h2>Earnings Over Time</h2>
-            <div class="chart-placeholder">
-                <canvas id="earningsChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h2>Clicks vs Conversions</h2>
-            <div class="chart-placeholder">
-                <canvas id="conversionChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Performing Links -->
+    <!-- Performance Breakdown -->
     <div class="performance-section">
-        <h2>Top Performing Links</h2>
-        <div class="performance-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Link/Campaign</th>
-                        <th>Clicks</th>
-                        <th>Sales</th>
-                        <th>Revenue</th>
-                        <th>Conversion Rate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="link-info">
-                                <span class="link-name">Main Store Link</span>
-                                <span class="link-type">General</span>
-                            </div>
-                        </td>
-                        <td>456</td>
-                        <td>18</td>
-                        <td>₹5,400</td>
-                        <td><span class="rate-badge good">3.9%</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="link-info">
-                                <span class="link-name">Rose Water - Instagram</span>
-                                <span class="link-type">Product</span>
-                            </div>
-                        </td>
-                        <td>234</td>
-                        <td>12</td>
-                        <td>₹3,600</td>
-                        <td><span class="rate-badge excellent">5.1%</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="link-info">
-                                <span class="link-name">Face Care - YouTube</span>
-                                <span class="link-type">Collection</span>
-                            </div>
-                        </td>
-                        <td>345</td>
-                        <td>9</td>
-                        <td>₹2,700</td>
-                        <td><span class="rate-badge average">2.6%</span></td>
-                    </tr>
-                </tbody>
-            </table>
+        <h3>Performance Breakdown</h3>
+        <div class="performance-grid">
+            <div class="performance-item">
+                <div class="performance-label">Average Order Value</div>
+                <div class="performance-value">
+                    {% if total_orders > 0 %}
+                        ₹{{ total_sales|add:total_orders|stringformat:"d" }}
+                    {% else %}
+                        ₹0.00
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="performance-item">
+                <div class="performance-label">Pending Commission</div>
+                <div class="performance-value">₹{{ pending_commission|default:"0.00" }}</div>
+            </div>
+
+            <div class="performance-item">
+                <div class="performance-label">Available Balance</div>
+                <div class="performance-value">₹{{ available_for_withdrawal|default:"0.00" }}</div>
+            </div>
+
+            <div class="performance-item">
+                <div class="performance-label">Total Withdrawn</div>
+                <div class="performance-value">₹{{ total_withdrawn|default:"0.00" }}</div>
+            </div>
         </div>
     </div>
 
-    <!-- Top Products -->
-    <div class="top-products-section">
-        <h2>Top Selling Products</h2>
-        <div class="products-grid-stats">
-            <div class="product-stat-card">
-                <img src="{% static 'images/rose-water.jpg' %}" alt="Rose Water">
-                <h3>Pure Rose Water</h3>
-                <div class="product-stats">
-                    <span>28 sales</span>
-                    <span>₹5,400 revenue</span>
-                </div>
-            </div>
-
-            <div class="product-stat-card">
-                <img src="{% static 'images/sandalwood.jpg' %}" alt="Sandalwood">
-                <h3>Sandalwood Powder</h3>
-                <div class="product-stats">
-                    <span>16 sales</span>
-                    <span>₹3,200 revenue</span>
-                </div>
-            </div>
-
-            <div class="product-stat-card">
-                <img src="{% static 'images/charcoal.jpg' %}" alt="Charcoal">
-                <h3>Activated Charcoal</h3>
-                <div class="product-stats">
-                    <span>14 sales</span>
-                    <span>₹2,800 revenue</span>
-                </div>
-            </div>
+    <!-- Top Products Table -->
+    <div class="chart-card">
+        <h3>Top Performing Products</h3>
+        {% if top_products %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--color-border);">
+                    <th style="text-align: left; padding: 12px 0; font-weight: 600; color: var(--color-text); font-size: 12px; text-transform: uppercase;">Product</th>
+                    <th style="text-align: right; padding: 12px 0; font-weight: 600; color: var(--color-text); font-size: 12px; text-transform: uppercase;">Sales</th>
+                    <th style="text-align: right; padding: 12px 0; font-weight: 600; color: var(--color-text); font-size: 12px; text-transform: uppercase;">Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in top_products %}
+                <tr style="border-bottom: 1px solid var(--color-border);">
+                    <td style="padding: 12px 0; color: var(--color-text);">{{ product.order__items__product_name }}</td>
+                    <td style="text-align: right; padding: 12px 0; color: var(--color-text);">{{ product.quantity }}</td>
+                    <td style="text-align: right; padding: 12px 0; color: var(--color-primary); font-weight: 600;">₹{{ product.revenue|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+            No product sales yet
         </div>
+        {% endif %}
     </div>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Sample Chart.js implementation
-const earningsCtx = document.getElementById('earningsChart');
-const conversionCtx = document.getElementById('conversionChart');
-
-// You can implement actual charts here using Chart.js
+    function updateStats() {
+        const period = document.getElementById('timePeriod').value;
+        // In production, this would fetch new data from the server
+        console.log('Selected period:', period);
+    }
 </script>
 {% endblock %}

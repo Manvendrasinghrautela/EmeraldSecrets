@@ -2,152 +2,605 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+<style>
+    .withdrawals-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--color-text);
+    }
+
+    .page-description {
+        font-size: 16px;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Action Button */
+    .action-button {
+        display: inline-block;
+        padding: 12px 24px;
+        background: var(--color-primary);
+        color: var(--color-btn-primary-text);
+        border: none;
+        border-radius: var(--radius-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--duration-fast) var(--ease-standard);
+        text-decoration: none;
+        margin-bottom: 32px;
+    }
+
+    .action-button:hover {
+        background: var(--color-primary-hover);
+    }
+
+    /* Balance Cards */
+    .balance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .balance-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+    }
+
+    .balance-icon {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    .balance-label {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .balance-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-text);
+    }
+
+    .balance-description {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin-top: 8px;
+    }
+
+    /* Withdrawal Form */
+    .withdrawal-form-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        margin-bottom: 40px;
+    }
+
+    .form-section {
+        margin-bottom: 28px;
+    }
+
+    .form-section h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-text);
+        margin: 0 0 16px 0;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--color-text);
+        margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-base);
+        background: var(--color-background);
+        color: var(--color-text);
+        font-size: 14px;
+        font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--focus-ring);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .form-hint {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin-top: 4px;
+    }
+
+    /* Payment Method Tabs */
+    .payment-methods {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .payment-method-btn {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid var(--color-border);
+        background: var(--color-background);
+        color: var(--color-text);
+        border-radius: var(--radius-base);
+        cursor: pointer;
+        font-weight: 500;
+        transition: all var(--duration-fast) var(--ease-standard);
+    }
+
+    .payment-method-btn:hover {
+        border-color: var(--color-primary);
+    }
+
+    .payment-method-btn.active {
+        background: var(--color-primary);
+        color: var(--color-btn-primary-text);
+        border-color: var(--color-primary);
+    }
+
+    .payment-method-form {
+        display: none;
+    }
+
+    .payment-method-form.active {
+        display: block;
+    }
+
+    /* Submit Button */
+    .submit-button {
+        padding: 14px 28px;
+        background: var(--color-primary);
+        color: var(--color-btn-primary-text);
+        border: none;
+        border-radius: var(--radius-base);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--duration-fast) var(--ease-standard);
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .submit-button:hover {
+        background: var(--color-primary-hover);
+    }
+
+    .submit-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Withdrawal History */
+    .history-section {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+    }
+
+    .history-section h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-text);
+        margin: 0 0 20px 0;
+    }
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .history-table th {
+        background: var(--color-background);
+        padding: 12px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--color-text);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .history-table td {
+        padding: 12px;
+        border-bottom: 1px solid var(--color-border);
+        color: var(--color-text);
+        font-size: 14px;
+    }
+
+    .history-table tr:hover {
+        background: var(--color-background);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: rgba(var(--color-orange-500-rgb), 0.15);
+        color: var(--color-warning);
+        border: 1px solid rgba(var(--color-orange-500-rgb), 0.25);
+    }
+
+    .status-paid {
+        background: rgba(var(--color-green-500-rgb), 0.15);
+        color: var(--color-success);
+        border: 1px solid rgba(var(--color-green-500-rgb), 0.25);
+    }
+
+    .status-processing {
+        background: rgba(var(--color-teal-500-rgb), 0.15);
+        color: var(--color-primary);
+        border: 1px solid rgba(var(--color-teal-500-rgb), 0.25);
+    }
+
+    .status-rejected {
+        background: rgba(var(--color-red-500-rgb), 0.15);
+        color: var(--color-error);
+        border: 1px solid rgba(var(--color-red-500-rgb), 0.25);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--color-text-secondary);
+    }
+
+    .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+
+    /* Alert Messages */
+    .alert {
+        padding: 16px;
+        border-radius: var(--radius-base);
+        margin-bottom: 24px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .alert-success {
+        background: rgba(var(--color-green-500-rgb), 0.1);
+        border: 1px solid rgba(var(--color-green-500-rgb), 0.3);
+        color: var(--color-success);
+    }
+
+    .alert-error {
+        background: rgba(var(--color-red-500-rgb), 0.1);
+        border: 1px solid rgba(var(--color-red-500-rgb), 0.3);
+        color: var(--color-error);
+    }
+
+    .alert-icon {
+        flex-shrink: 0;
+        font-size: 18px;
+        margin-top: 2px;
+    }
+
+    .alert-content {
+        flex: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .withdrawals-container {
+            padding: 20px 16px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+        }
+
+        .balance-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .withdrawal-form-card {
+            padding: 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .payment-methods {
+            flex-direction: column;
+        }
+
+        .submit-button {
+            max-width: 100%;
+        }
+
+        .history-table {
+            font-size: 12px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 8px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="affiliate-dashboard">
+<div class="withdrawals-container">
+    <!-- Page Header -->
     <div class="page-header">
         <h1>Withdrawals & Payouts</h1>
-        <button class="btn btn-primary" data-modal="requestWithdrawal">
-            <i class="fas fa-money-bill-wave"></i> Request Withdrawal
-        </button>
+        <p class="page-description">Manage your affiliate earnings and request payouts</p>
     </div>
 
-    <!-- Balance Overview -->
-    <div class="balance-overview">
+    <!-- Balance Cards with REAL DATA -->
+    <div class="balance-grid">
+        <!-- Available Balance -->
         <div class="balance-card">
-            <div class="balance-icon available">💰</div>
-            <div class="balance-info">
-                <span class="balance-label">Available Balance</span>
-                <span class="balance-amount">₹8,450</span>
-                <span class="balance-note">Ready to withdraw</span>
-            </div>
+            <div class="balance-icon">💰</div>
+            <div class="balance-label">Available Balance</div>
+            <div class="balance-value">₹{{ available_balance|floatformat:2 }}</div>
+            <div class="balance-description">Ready to withdraw</div>
         </div>
 
+        <!-- Pending Balance -->
         <div class="balance-card">
-            <div class="balance-icon pending">⏳</div>
-            <div class="balance-info">
-                <span class="balance-label">Pending Balance</span>
-                <span class="balance-amount">₹4,000</span>
-                <span class="balance-note">Processing from recent sales</span>
-            </div>
+            <div class="balance-icon">⏳</div>
+            <div class="balance-label">Pending Balance</div>
+            <div class="balance-value">₹{{ pending_balance|floatformat:2 }}</div>
+            <div class="balance-description">Processing from recent sales</div>
         </div>
 
+        <!-- Total Withdrawn -->
         <div class="balance-card">
-            <div class="balance-icon total">💵</div>
-            <div class="balance-info">
-                <span class="balance-label">Total Withdrawn</span>
-                <span class="balance-amount">₹25,300</span>
-                <span class="balance-note">Lifetime earnings</span>
-            </div>
+            <div class="balance-icon">✅</div>
+            <div class="balance-label">Total Withdrawn</div>
+            <div class="balance-value">₹{{ total_withdrawn|floatformat:2 }}</div>
+            <div class="balance-description">Lifetime earnings</div>
         </div>
     </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}success{% endif %}">
+                <div class="alert-icon">
+                    {% if message.tags == 'error' %}❌{% else %}✅{% endif %}
+                </div>
+                <div class="alert-content">{{ message }}</div>
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- Request Withdrawal Form -->
-    <div class="withdrawal-form-section">
-        <h2>Request New Withdrawal</h2>
-        <form method="post" class="withdrawal-form">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label>Withdrawal Amount</label>
-                <div class="amount-input-wrapper">
-                    <span class="currency-symbol">₹</span>
-                    <input type="number" name="amount" min="1000" max="8450" placeholder="Enter amount" required>
-                </div>
-                <small class="form-hint">Minimum withdrawal: ₹1,000 | Available: ₹8,450</small>
-            </div>
+    <form method="POST" class="withdrawal-form-card">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="request_withdrawal">
+
+        <!-- Amount Section -->
+        <div class="form-section">
+            <h3>Withdrawal Amount</h3>
 
             <div class="form-group">
-                <label>Payment Method</label>
-                <div class="payment-methods">
-                    <div class="payment-option">
-                        <input type="radio" id="bank" name="payment_method" value="bank" checked>
-                        <label for="bank">
-                            <i class="fas fa-university"></i>
-                            <span>Bank Transfer</span>
-                            <small>Account: ****5678</small>
-                        </label>
-                    </div>
-                    <div class="payment-option">
-                        <input type="radio" id="upi" name="payment_method" value="upi">
-                        <label for="upi">
-                            <i class="fas fa-mobile-alt"></i>
-                            <span>UPI</span>
-                            <small>user@upi</small>
-                        </label>
-                    </div>
-                </div>
-                <a href="{% url 'affiliate:settings' %}" class="link-small">Update payment information</a>
-            </div>
-
-            <div class="withdrawal-note">
-                <i class="fas fa-info-circle"></i>
-                <p>Withdrawals are processed within 5-7 business days. You'll receive a confirmation email once your request is approved.</p>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-large">Submit Withdrawal Request</button>
-        </form>
-    </div>
-
-    <!-- Withdrawal History -->
-    <div class="withdrawal-history-section">
-        <h2>Withdrawal History</h2>
-
-        <div class="withdrawal-list">
-            <div class="withdrawal-item completed">
-                <div class="withdrawal-icon">✓</div>
-                <div class="withdrawal-details">
-                    <span class="withdrawal-amount">₹5,000</span>
-                    <span class="withdrawal-method">Bank Transfer</span>
-                    <span class="withdrawal-date">Oct 25, 2024</span>
-                </div>
-                <div class="withdrawal-status">
-                    <span class="status-badge completed">Completed</span>
-                    <span class="transaction-id">TXN-12345</span>
-                </div>
-            </div>
-
-            <div class="withdrawal-item completed">
-                <div class="withdrawal-icon">✓</div>
-                <div class="withdrawal-details">
-                    <span class="withdrawal-amount">₹8,000</span>
-                    <span class="withdrawal-method">UPI</span>
-                    <span class="withdrawal-date">Sep 28, 2024</span>
-                </div>
-                <div class="withdrawal-status">
-                    <span class="status-badge completed">Completed</span>
-                    <span class="transaction-id">TXN-12344</span>
-                </div>
-            </div>
-
-            <div class="withdrawal-item processing">
-                <div class="withdrawal-icon">⏳</div>
-                <div class="withdrawal-details">
-                    <span class="withdrawal-amount">₹6,000</span>
-                    <span class="withdrawal-method">Bank Transfer</span>
-                    <span class="withdrawal-date">Nov 2, 2024</span>
-                </div>
-                <div class="withdrawal-status">
-                    <span class="status-badge processing">Processing</span>
-                    <span class="transaction-id">TXN-12346</span>
-                </div>
-            </div>
-
-            <div class="withdrawal-item completed">
-                <div class="withdrawal-icon">✓</div>
-                <div class="withdrawal-details">
-                    <span class="withdrawal-amount">₹6,300</span>
-                    <span class="withdrawal-method">Bank Transfer</span>
-                    <span class="withdrawal-date">Aug 15, 2024</span>
-                </div>
-                <div class="withdrawal-status">
-                    <span class="status-badge completed">Completed</span>
-                    <span class="transaction-id">TXN-12343</span>
+                <label for="amount">Amount (₹)</label>
+                <input 
+                    type="number" 
+                    id="amount" 
+                    name="amount" 
+                    min="{{ min_withdrawal }}" 
+                    max="{{ available_balance }}"
+                    step="100"
+                    placeholder="Enter withdrawal amount"
+                    required
+                >
+                <div class="form-hint">
+                    Minimum withdrawal: ₹{{ min_withdrawal }} | Available: ₹{{ available_balance|floatformat:2 }}
                 </div>
             </div>
         </div>
+
+        <!-- Payment Method Selection -->
+        <div class="form-section">
+            <h3>Payment Method</h3>
+
+            <div class="payment-methods">
+                <button type="button" class="payment-method-btn active" onclick="switchPaymentMethod('bank')">
+                    🏦 Bank Transfer
+                </button>
+                <button type="button" class="payment-method-btn" onclick="switchPaymentMethod('upi')">
+                    📱 UPI
+                </button>
+            </div>
+
+            <!-- Bank Transfer Form -->
+            <div id="bank-form" class="payment-method-form active">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="bank_name">Bank Name</label>
+                        <input type="text" id="bank_name" name="bank_name" placeholder="e.g., HDFC Bank">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account_holder">Account Holder Name</label>
+                        <input type="text" id="account_holder" name="account_holder" placeholder="Your name as per bank account">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="account_number">Account Number</label>
+                        <input type="text" id="account_number" name="account_number" placeholder="e.g., 1234567890">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ifsc_code">IFSC Code</label>
+                        <input type="text" id="ifsc_code" name="ifsc_code" placeholder="e.g., HDFC0000001">
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPI Form -->
+            <div id="upi-form" class="payment-method-form">
+                <div class="form-group">
+                    <label for="upi_id">UPI ID</label>
+                    <input type="email" id="upi_id" name="upi_id" placeholder="yourname@okhdfcbank">
+                    <div class="form-hint">Format: yourname@bankname</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-button">Request Withdrawal</button>
+    </form>
+
+    <!-- Withdrawal History -->
+    {% if withdrawal_history %}
+    <div class="history-section">
+        <h3>Withdrawal History</h3>
+
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Requested On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for withdrawal in withdrawal_history %}
+                <tr>
+                    <td>
+                        {% if withdrawal.paid_at %}
+                            {{ withdrawal.paid_at|date:"M d, Y" }}
+                        {% elif withdrawal.approved_at %}
+                            {{ withdrawal.approved_at|date:"M d, Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td style="font-weight: 600; color: var(--color-primary);">₹{{ withdrawal.amount|floatformat:2 }}</td>
+                    <td>
+                        {% if withdrawal.payment_method == 'bank' %}
+                            🏦 Bank Transfer
+                        {% elif withdrawal.payment_method == 'upi' %}
+                            📱 UPI
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ withdrawal.status }}">
+                            {{ withdrawal.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ withdrawal.requested_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</section>
+    {% else %}
+    <div class="history-section">
+        <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <p>No withdrawal requests yet</p>
+            <p style="font-size: 12px;">Your withdrawal requests will appear here once you make your first request.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function switchPaymentMethod(method) {
+        // Hide all forms
+        document.getElementById('bank-form').classList.remove('active');
+        document.getElementById('upi-form').classList.remove('active');
+
+        // Remove active class from all buttons
+        document.querySelectorAll('.payment-method-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected form
+        document.getElementById(method + '-form').classList.add('active');
+
+        // Add active class to clicked button
+        event.target.classList.add('active');
+
+        // Update payment_method hidden input if needed
+        document.querySelector('input[name="payment_method"]').value = method;
+
+        // Clear opposite form inputs
+        if (method === 'bank') {
+            document.getElementById('upi_id').value = '';
+            document.getElementById('upi_id').removeAttribute('required');
+            document.getElementById('bank_name').setAttribute('required', 'required');
+            document.getElementById('account_holder').setAttribute('required', 'required');
+            document.getElementById('account_number').setAttribute('required', 'required');
+            document.getElementById('ifsc_code').setAttribute('required', 'required');
+        } else {
+            document.getElementById('bank_name').value = '';
+            document.getElementById('account_holder').value = '';
+            document.getElementById('account_number').value = '';
+            document.getElementById('ifsc_code').value = '';
+            document.getElementById('bank_name').removeAttribute('required');
+            document.getElementById('account_holder').removeAttribute('required');
+            document.getElementById('account_number').removeAttribute('required');
+            document.getElementById('ifsc_code').removeAttribute('required');
+            document.getElementById('upi_id').setAttribute('required', 'required');
+        }
+    }
+
+    // Add hidden input for payment_method
+    const form = document.querySelector('form');
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'payment_method';
+    hiddenInput.value = 'bank';
+    form.appendChild(hiddenInput);
+</script>
 {% endblock %}

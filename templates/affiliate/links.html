@@ -545,21 +545,7 @@
                 placeholder="Loading referral link..."
             >
             <button class="copy-btn" onclick="copyLinkToClipboard(document.getElementById('mainLink'))">
-                📋 Copy
-            </button>
-        </div>
-        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <button class="btn-action btn-stats" onclick="shareOnTwitter()">
-                𝕏 Twitter
-            </button>
-            <button class="btn-action btn-stats" onclick="shareOnFacebook()">
-                f Facebook
-            </button>
-            <button class="btn-action btn-stats" onclick="shareViaEmail()">
-                ✉️ Email
-            </button>
-            <button class="btn-action btn-stats" onclick="shareOnLinkedIn()">
-                in LinkedIn
+                COPY
             </button>
         </div>
     </div>
@@ -580,7 +566,7 @@
                 </div>
                 <div class="banner-info">
                     <p class="banner-title">{{ banner.title }}</p>
-                    <p class="banner-size">📐 {{ banner.size }}</p>
+                    <p class="banner-size"> {{ banner.size }}</p>
                     <div class="banner-code">{{ banner.embed_code|truncatewords:10 }}</div>
                     <div class="banner-actions">
                         <button class="btn-copy" onclick="copyBannerCode(this)">
@@ -596,40 +582,40 @@
 
     <!-- Quick Share Tips -->
     <div style="background: var(--color-bg-3); border: 1px solid rgba(33, 128, 141, 0.2); border-radius: var(--radius-lg); padding: 24px; margin-top: 40px;">
-        <h3 style="margin-top: 0; color: var(--color-text);">💡 Tips for Maximum Conversions</h3>
+        <h3 style="margin-top: 0; color: var(--color-text);">Tips for Maximum Conversions</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📱 Social Media</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">Social Media</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Share your link in Instagram stories, Facebook posts, and Twitter threads for maximum reach
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📧 Email</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">Email</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Include your referral link in email signatures and newsletters to followers
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">🌐 Website</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">Website</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Embed the banner on your website sidebar or blog posts for passive referrals
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📺 Videos</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">Videos</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Add your link in YouTube video descriptions, pinned comments, and community posts
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">💬 Community</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">Community</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Share authentically in relevant forums, Reddit, and community groups where appropriate
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📞 Personal</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">Personal</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Share with friends and family via WhatsApp, Telegram, and direct messages
                 </p>
@@ -639,40 +625,40 @@
 
     <!-- Link Performance Info -->
     <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 24px; margin-top: 40px;">
-        <h3 style="margin-top: 0; color: var(--color-text);">📊 How Your Links Work</h3>
+        <h3 style="margin-top: 0; color: var(--color-text);">How Your Links Work</h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">✅ 30-Day Tracking Window</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">30-Day Tracking Window</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Earn commission on any purchase made within 30 days of clicking your link, even if they leave the site
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">💰 5% Commission</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">5% Commission</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     You earn 5% commission on every order from your referrals. No hidden fees or caps!
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">⏱️ Auto-Approval</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">Auto-Approval</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Commissions are automatically approved after 7 days and available to withdraw
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">📈 Real-Time Stats</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">Real-Time Stats</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Track every click and conversion in real-time from your dashboard
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">🔒 Secure Tracking</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">Secure Tracking</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Cookies track visitors for 30 days across multiple devices and sessions
                 </p>
             </div>
             <div>
-                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">🎯 No Limits</p>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">No Limits</p>
                 <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
                     Share as many links as you want with no restrictions or minimum performance requirements
                 </p>

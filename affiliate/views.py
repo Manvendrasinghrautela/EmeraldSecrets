@@ -5,7 +5,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.db import models
-from django.db.models import Sum, Count,F
+from django.db.models import Sum, Count,F, DecimalField, Q
+from django.utils import timezone
 from decimal import Decimal
 import uuid
 import logging
@@ -128,49 +129,65 @@ def affiliate_join(request):
         return redirect('affiliate:home')
     
     # ✅ CHECK if user is already an affiliate
-    if request.user.is_authenticated:
-        try:
-            affiliate = AffiliateUser.objects.get(user=request.user)
-            messages.info(request, f'You are already an affiliate! Your code: {affiliate.affiliate_code}')
-            logger.info(f"⚠️  User already affiliate: {affiliate.affiliate_code}")
-            return redirect('affiliate:dashboard')
-        except AffiliateUser.DoesNotExist:
-            pass
+    try:
+        affiliate = AffiliateUser.objects.get(user=request.user)
+        messages.info(request, 'You are already part of the affiliate program.')
+        return redirect('affiliate:dashboard')
+    except AffiliateUser.DoesNotExist:
+        pass
     
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            messages.error(request, 'Please login first.')
-            return redirect('accounts:login')
-        
-        try:
-            # ✅ GENERATE unique affiliate code
-            affiliate_code = f"{request.user.username.upper()}_{uuid.uuid4().hex[:8].upper()}"
+        form = AffiliateSignupForm(request.POST)
+        if form.is_valid():
+            try:
+                # Get affiliate program
+                program = AffiliateProgram.objects.first()
+                
+                # Create affiliate account with bank details
+                affiliate = AffiliateUser.objects.create(
+                    user=request.user,
+                    program=program,
+                    status='pending',
+                    
+                    # Bank Details
+                    bank_name=form.cleaned_data['bank_name'],
+                    account_holder_name=form.cleaned_data['account_holder_name'],
+                    account_number=form.cleaned_data['account_number'],
+                    ifsc_code=form.cleaned_data['ifsc_code'],
+                    upi_id=form.cleaned_data['upi_id'],
+                    pan_number=form.cleaned_data['pan_number'],
+                )
+                
+                # Log the signup
+                logger.info(f"New affiliate signup: {affiliate.affiliate_code} | Bank: {affiliate.bank_name}")
+                
+                # Send notification to admin
+                send_admin_notification(
+                    subject="New Affiliate Signup",
+                    message=f"New affiliate {request.user.get_full_name()} joined with bank details",
+                    affiliate=affiliate
+                )
+                
+                messages.success(
+                    request,
+                    'Application submitted successfully! We\'ll review your bank details and approve your account within 24-48 hours.'
+                )
+                
+                return redirect('affiliate:dashboard')
             
-            # ✅ CREATE affiliate user
-            affiliate = AffiliateUser.objects.create(
-                user=request.user,
-                program=program,
-                affiliate_code=affiliate_code,
-                status='pending'  # Awaiting admin approval
-            )
-            
-            logger.info(
-                f"✅ Affiliate application submitted: {affiliate_code} | "
-                f"User: {request.user.username} | "
-                f"Status: pending"
-            )
-            
-            messages.success(request, f'Application submitted successfully! Your code: {affiliate_code}. You will be contacted soon.')
-            return redirect('affiliate:dashboard')
-            
-        except Exception as e:
-            logger.error(f"❌ Error creating affiliate: {str(e)}")
-            messages.error(request, f'Error: {str(e)}')
-            return redirect('affiliate:join')
+            except Exception as e:
+                logger.error(f"Affiliate signup error: {str(e)}")
+                messages.error(request, f'Error creating account: {str(e)}')
+        else:
+            # Show form errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = AffiliateSignupForm()
     
-    context = {'program': program}
+    context = {'form': form}
     return render(request, 'affiliate/join.html', context)
-
 
 # ============================================================================
 # AFFILIATE DASHBOARD & STATS
@@ -279,72 +296,108 @@ def affiliate_dashboard(request):
 
 @login_required
 def affiliate_stats(request):
-    """
-    Affiliate statistics with commission breakdown
-    
-    Features:
-    - Show status breakdown (pending, confirmed, paid, failed)
-    - Show commission breakdown by status
-    - Show conversion analytics
-    - Paginated order list
-    """
+    """Display affiliate performance statistics with REAL DATA from database"""
     
     try:
         affiliate = AffiliateUser.objects.get(user=request.user)
     except AffiliateUser.DoesNotExist:
+        messages.error(request, 'You need to join the affiliate program first.')
         return redirect('affiliate:join')
     
-    # ✅ GET all affiliate orders
-    all_orders = AffiliateOrder.objects.filter(affiliate=affiliate).order_by('-created_at')
+    # Get time period from request
+    time_period = request.GET.get('period', 30)
     
-    # ✅ STATUS BREAKDOWN
-    pending_orders = all_orders.filter(status='pending').count()
-    confirmed_orders = all_orders.filter(status='confirmed').count()
-    paid_orders = all_orders.filter(status='paid').count()
-    failed_orders = all_orders.filter(status='failed').count()
+    try:
+        time_period = int(time_period)
+    except ValueError:
+        time_period = 30
     
-    # ✅ COMMISSION BREAKDOWN by status
-    pending_commission = all_orders.filter(status='pending').aggregate(
-        total=models.Sum('commission_amount')
-    )['total'] or Decimal('0')
+    # Calculate date range
+    if time_period == 'all':
+        start_date = None
+    else:
+        start_date = timezone.now() - timezone.timedelta(days=time_period)
     
-    confirmed_commission = all_orders.filter(status='confirmed').aggregate(
-        total=models.Sum('commission_amount')
-    )['total'] or Decimal('0')
+    # REAL DATA: Get clicks
+    if start_date:
+        total_clicks = AffiliateClick.objects.filter(
+            affiliate=affiliate,
+            created_at__gte=start_date
+        ).count()
+    else:
+        total_clicks = AffiliateClick.objects.filter(affiliate=affiliate).count()
     
-    paid_commission = all_orders.filter(status='paid').aggregate(
-        total=models.Sum('commission_amount')
-    )['total'] or Decimal('0')
+    # REAL DATA: Get orders and conversions
+    if start_date:
+        affiliate_orders = AffiliateOrder.objects.filter(
+            affiliate=affiliate,
+            created_at__gte=start_date
+        )
+    else:
+        affiliate_orders = AffiliateOrder.objects.filter(affiliate=affiliate)
     
-    # ✅ PAGINATION
-    paginator = Paginator(all_orders, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    total_orders = affiliate_orders.count()
     
-    # ✅ CLICK stats
-    total_clicks = AffiliateClick.objects.filter(affiliate=affiliate).count()
-    click_to_order_ratio = (all_orders.count() / total_clicks * 100) if total_clicks > 0 else 0
+    # REAL DATA: Get total sales
+    total_sales = affiliate_orders.aggregate(
+        total=Sum('order__total', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    # REAL DATA: Get commissions
+    total_commission = affiliate_orders.aggregate(
+        total=Sum('commission_amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    pending_commission = affiliate_orders.filter(
+        status='pending'
+    ).aggregate(
+        total=Sum('commission_amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    available_for_withdrawal = affiliate_orders.filter(
+        status='confirmed'
+    ).aggregate(
+        total=Sum('commission_amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    # REAL DATA: Get withdrawal history
+    total_withdrawn = AffiliateWithdrawal.objects.filter(
+        affiliate=affiliate,
+        status='paid'
+    ).aggregate(
+        total=Sum('amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    # Calculate conversion rate
+    conversion_rate = (total_orders / total_clicks * 100) if total_clicks > 0 else 0
+    
+    # REAL DATA: Top performing products
+    top_products = affiliate_orders.values(
+        'order__items__product_name'
+    ).annotate(
+        quantity=Sum('order__items__quantity'),
+        revenue=Sum('order__items__price')
+    ).order_by('-revenue')[:5]
+    
+    # REAL DATA: Recent orders
+    recent_orders = affiliate_orders.select_related('order').order_by('-created_at')[:10]
     
     context = {
         'affiliate': affiliate,
-        "affiliate_link": affiliate.referral_link,
-        'page_obj': page_obj,
-        'orders': page_obj.object_list,
         'total_clicks': total_clicks,
-        'click_to_order_ratio': round(click_to_order_ratio, 2),
-        # ✅ Status breakdown
-        'pending_orders': pending_orders,
-        'confirmed_orders': confirmed_orders,
-        'paid_orders': paid_orders,
-        'failed_orders': failed_orders,
-        # ✅ Commission breakdown
+        'total_orders': total_orders,
+        'total_sales': total_sales,
+        'conversion_rate': round(conversion_rate, 1),
+        'total_commission': total_commission,
         'pending_commission': pending_commission,
-        'confirmed_commission': confirmed_commission,
-        'paid_commission': paid_commission,
-        'total_earned': pending_commission + confirmed_commission + paid_commission,
+        'available_for_withdrawal': available_for_withdrawal,
+        'total_withdrawn': total_withdrawn,
+        'top_products': top_products,
+        'recent_orders': recent_orders,
+        'time_period': time_period,
     }
     
-    logger.info(f"✅ Affiliate stats viewed: {affiliate.affiliate_code}")
+    logger.info(f"Affiliate stats viewed: {affiliate.affiliate_code} | Earnings: ₹{total_commission}")
     
     return render(request, 'affiliate/stats.html', context)
 
@@ -454,85 +507,125 @@ def affiliate_links(request):
 
 @login_required
 def affiliate_withdrawals(request):
-    """
-    Affiliate withdrawals page
-    
-    Features:
-    - Show total commission earned (5%)
-    - Show pending withdrawals
-    - Calculate available balance
-    - Display withdrawal history
-    - Show minimum withdrawal requirement
-    
-    Balance calculation:
-    - Total Commission: earned & approved commissions only
-    - Pending Withdrawals: requested but not yet paid
-    - Available Balance: Total - Pending
-    """
+    """Display withdrawals and request withdrawal with REAL BANK DETAILS"""
     
     try:
         affiliate = AffiliateUser.objects.get(user=request.user)
     except AffiliateUser.DoesNotExist:
+        messages.error(request, 'You need to join the affiliate program first.')
         return redirect('affiliate:join')
     
-    # ✅ REAL commission from confirmed/paid orders ONLY
-    # These are the orders that are approved and available
-    total_commission = AffiliateOrder.objects.filter(
+    # REAL DATA: Get withdrawal balance
+    confirmed_commissions = AffiliateOrder.objects.filter(
         affiliate=affiliate,
-        status__in=['confirmed', 'paid']  # Only approved commissions
+        status='confirmed'
     ).aggregate(
-        total=models.Sum('commission_amount')
-    )['total'] or Decimal('0')
+        total=Sum('commission_amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
     
-    # ✅ PENDING withdrawals (requested but not yet paid)
-    pending_withdrawals = AffiliateWithdrawal.objects.filter(
+    pending_commissions = AffiliateOrder.objects.filter(
         affiliate=affiliate,
-        status__in=['pending', 'approved']  # Requested but not transferred
-    ).aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
+        status='pending'
+    ).aggregate(
+        total=Sum('commission_amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
     
-    # ✅ AVAILABLE BALANCE for withdrawal
-    # Formula: Total Commission - Pending Withdrawals
-    available_balance = total_commission - pending_withdrawals
-    
-    # ✅ Check if user can withdraw
-    can_withdraw = available_balance >= affiliate.program.min_withdrawal
-    
-    # ✅ GET withdrawal history
-    withdrawals = AffiliateWithdrawal.objects.filter(
-        affiliate=affiliate
-    ).order_by('-requested_at')
-    
-    # ✅ PAGINATION
-    paginator = Paginator(withdrawals, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    # ✅ WITHDRAWAL STATS
+    # Get total withdrawn (REAL DATA)
     total_withdrawn = AffiliateWithdrawal.objects.filter(
         affiliate=affiliate,
         status='paid'
-    ).aggregate(total=models.Sum('amount'))['total'] or Decimal('0')
+    ).aggregate(
+        total=Sum('amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    # Get pending withdrawals
+    pending_withdrawals = AffiliateWithdrawal.objects.filter(
+        affiliate=affiliate
+    ).exclude(status='paid').aggregate(
+        total=Sum('amount', output_field=DecimalField())
+    )['total'] or Decimal('0.00')
+    
+    # Get withdrawal history (REAL DATA)
+    withdrawal_history = AffiliateWithdrawal.objects.filter(
+        affiliate=affiliate
+    ).order_by('-requested_at')
+    
+    # Handle withdrawal request
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'request_withdrawal':
+            # VALIDATE: Minimum withdrawal amount
+            amount = Decimal(request.POST.get('amount', '0'))
+            payment_method = request.POST.get('payment_method')
+            
+            min_withdrawal = affiliate.program.min_withdrawal if hasattr(affiliate, 'program') else Decimal('1000.00')
+            
+            # VALIDATE: Sufficient balance
+            if amount < min_withdrawal:
+                messages.error(request, f'Minimum withdrawal amount is ₹{min_withdrawal}')
+                return redirect('affiliate:withdrawals')
+            
+            if amount > confirmed_commissions:
+                messages.error(request, f'Insufficient balance. Available: ₹{confirmed_commissions}')
+                return redirect('affiliate:withdrawals')
+            
+            # VALIDATE: Payment method & Bank details provided
+            if payment_method == 'bank':
+                bank_name = request.POST.get('bank_name')
+                account_holder = request.POST.get('account_holder')
+                account_number = request.POST.get('account_number')
+                ifsc_code = request.POST.get('ifsc_code')
+                
+                if not all([bank_name, account_holder, account_number, ifsc_code]):
+                    messages.error(request, 'Please provide all bank details')
+                    return redirect('affiliate:withdrawals')
+                
+                payment_details = f"""
+                Bank: {bank_name}
+                Account Holder: {account_holder}
+                Account Number: {account_number}
+                IFSC Code: {ifsc_code}
+                """
+            
+            elif payment_method == 'upi':
+                upi_id = request.POST.get('upi_id')
+                
+                if not upi_id:
+                    messages.error(request, 'Please provide UPI ID')
+                    return redirect('affiliate:withdrawals')
+                
+                payment_details = f"UPI: {upi_id}"
+            
+            else:
+                messages.error(request, 'Invalid payment method')
+                return redirect('affiliate:withdrawals')
+            
+            # CREATE WITHDRAWAL REQUEST
+            withdrawal = AffiliateWithdrawal.objects.create(
+                affiliate=affiliate,
+                amount=amount,
+                payment_method=payment_method,
+                payment_details=payment_details,
+                status='pending'
+            )
+            
+            messages.success(request, f'Withdrawal request of ₹{amount} submitted successfully!')
+            logger.info(f"Withdrawal requested: {affiliate.affiliate_code} | Amount: ₹{amount} | Method: {payment_method}")
+            
+            return redirect('affiliate:withdrawals')
     
     context = {
         'affiliate': affiliate,
-        'total_commission': total_commission,  # Earned (confirmed + paid)
-        'pending_withdrawals': pending_withdrawals,  # Requested
-        'available_balance': available_balance,  # Can withdraw
-        'can_withdraw': can_withdraw,
-        'total_withdrawn': total_withdrawn,  # Already paid out
-        'page_obj': page_obj,
-        'withdrawals': page_obj.object_list,
-        'min_withdrawal': affiliate.program.min_withdrawal,
+        'available_balance': confirmed_commissions,
+        'pending_balance': pending_commissions,
+        'total_withdrawn': total_withdrawn,
+        'pending_withdrawals': pending_withdrawals,
+        'withdrawal_history': withdrawal_history,
+        'min_withdrawal': affiliate.program.min_withdrawal if hasattr(affiliate, 'program') else Decimal('1000.00'),
     }
     
-    logger.info(
-        f"✅ Withdrawal page viewed: {affiliate.affiliate_code} | "
-        f"Balance: ₹{available_balance} | "
-        f"Can withdraw: {can_withdraw}"
-    )
-    
     return render(request, 'affiliate/withdrawals.html', context)
-
 
 @login_required
 @require_POST
