@@ -3,162 +3,773 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/affiliate.css' %}">
+<style>
+    /* Affiliate Links Page Styles */
+    .affiliate-links-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .page-header {
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--color-text);
+    }
+
+    .page-description {
+        font-size: 16px;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Create Link Section */
+    .create-link-section {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        margin-bottom: 40px;
+    }
+
+    .create-link-section h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 20px 0;
+        color: var(--color-text);
+    }
+
+    .link-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--color-text);
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 10px 12px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-base);
+        background: var(--color-background);
+        color: var(--color-text);
+        font-size: 14px;
+        font-family: var(--font-family-base);
+        transition: all var(--duration-fast) var(--ease-standard);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--focus-ring);
+    }
+
+    .btn-primary {
+        padding: 12px 24px;
+        background: var(--color-primary);
+        color: var(--color-btn-primary-text);
+        border: none;
+        border-radius: var(--radius-base);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all var(--duration-fast) var(--ease-standard);
+        width: fit-content;
+    }
+
+    .btn-primary:hover {
+        background: var(--color-primary-hover);
+    }
+
+    .btn-primary:active {
+        background: var(--color-primary-active);
+    }
+
+    /* Links List Section */
+    .links-list-section {
+        margin-bottom: 40px;
+    }
+
+    .links-list-section h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 24px 0;
+        color: var(--color-text);
+    }
+
+    /* Links Grid */
+    .links-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+    }
+
+    .link-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: all var(--duration-normal) var(--ease-standard);
+    }
+
+    .link-card:hover {
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-md);
+    }
+
+    .link-header {
+        background: var(--color-background);
+        border-bottom: 1px solid var(--color-border);
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .link-type-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        width: fit-content;
+    }
+
+    .link-type-badge.general {
+        background: rgba(33, 128, 141, 0.1);
+        color: var(--color-primary);
+        border: 1px solid rgba(33, 128, 141, 0.2);
+    }
+
+    .link-type-badge.product {
+        background: rgba(230, 129, 97, 0.1);
+        color: var(--color-warning);
+        border: 1px solid rgba(230, 129, 97, 0.2);
+    }
+
+    .link-type-badge.collection {
+        background: rgba(33, 128, 141, 0.1);
+        color: var(--color-success);
+        border: 1px solid rgba(33, 128, 141, 0.2);
+    }
+
+    .link-stats {
+        display: flex;
+        gap: 16px;
+        font-size: 12px;
+        color: var(--color-text-secondary);
+    }
+
+    .link-stats span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .link-body {
+        padding: 16px;
+    }
+
+    .link-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-text);
+        margin: 0 0 12px 0;
+    }
+
+    .link-url-box {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .link-url-box input {
+        flex: 1;
+        padding: 8px 10px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-base);
+        background: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-family-mono);
+        font-size: 12px;
+        cursor: text;
+    }
+
+    .link-url-box input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: var(--focus-ring);
+    }
+
+    .copy-btn {
+        padding: 8px 12px;
+        background: var(--color-secondary);
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-base);
+        cursor: pointer;
+        transition: all var(--duration-fast) var(--ease-standard);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+        background: var(--color-secondary-hover);
+        border-color: var(--color-primary);
+    }
+
+    .copy-btn:active {
+        background: var(--color-secondary-active);
+    }
+
+    .link-created {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    .link-actions {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        border-top: 1px solid var(--color-border);
+        background: var(--color-background);
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        color: var(--color-text);
+        border-radius: var(--radius-base);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all var(--duration-fast) var(--ease-standard);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .btn-action:hover {
+        background: var(--color-secondary);
+        border-color: var(--color-primary);
+    }
+
+    .btn-stats {
+        color: var(--color-primary);
+    }
+
+    .btn-delete {
+        color: var(--color-error);
+    }
+
+    .btn-delete:hover {
+        background: rgba(192, 21, 47, 0.1);
+    }
+
+    /* Empty State */
+    .empty-state {
+        grid-column: 1 / -1;
+        padding: 60px 20px;
+        text-align: center;
+        background: var(--color-surface);
+        border: 2px dashed var(--color-border);
+        border-radius: var(--radius-lg);
+    }
+
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+    }
+
+    .empty-state-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: 8px;
+    }
+
+    .empty-state-text {
+        font-size: 14px;
+        color: var(--color-text-secondary);
+        margin: 0;
+    }
+
+    /* Banners Section */
+    .banners-section {
+        margin-bottom: 40px;
+    }
+
+    .banners-section h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 24px 0;
+        color: var(--color-text);
+    }
+
+    .banners-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .banner-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: all var(--duration-normal) var(--ease-standard);
+    }
+
+    .banner-card:hover {
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-md);
+    }
+
+    .banner-preview {
+        width: 100%;
+        height: 150px;
+        background: var(--color-background);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .banner-info {
+        padding: 16px;
+    }
+
+    .banner-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-text);
+        margin: 0 0 6px 0;
+    }
+
+    .banner-size {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin: 0 0 12px 0;
+    }
+
+    .banner-code {
+        font-size: 11px;
+        color: var(--color-text-secondary);
+        background: var(--color-background);
+        padding: 8px;
+        border-radius: var(--radius-base);
+        overflow-x: auto;
+        margin-bottom: 12px;
+        font-family: var(--font-family-mono);
+        border: 1px solid var(--color-border);
+    }
+
+    .banner-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-copy {
+        flex: 1;
+        padding: 8px 12px;
+        background: var(--color-secondary);
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-base);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all var(--duration-fast) var(--ease-standard);
+    }
+
+    .btn-copy:hover {
+        background: var(--color-secondary-hover);
+    }
+
+    /* Stats Summary */
+    .stats-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 40px;
+    }
+
+    .stats-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .stats-label {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .stats-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .affiliate-links-container {
+            padding: 20px 16px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .links-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .banners-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .link-header {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .link-stats {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .link-actions {
+            flex-direction: column;
+        }
+
+        .link-url-box {
+            flex-direction: column;
+        }
+
+        .stats-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="affiliate-dashboard">
+<section class="affiliate-links-container">
+    <!-- Page Header -->
     <div class="page-header">
-        <h1>Affiliate Links</h1>
-        <p class="page-description">Create and manage your referral links for different products and campaigns</p>
+        <h1>Affiliate Links & Banners</h1>
+        <p class="page-description">Create custom referral links, manage campaigns, and access banners for sharing</p>
     </div>
 
-    <!-- Create New Link -->
+    <!-- Stats Summary -->
+    <div class="stats-summary">
+        <div class="stats-card">
+            <div class="stats-label">Total Links</div>
+            <div class="stats-value">{{ affiliate.user.affiliateclick_set.distinct_links|default:0 }}</div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-label">Total Clicks</div>
+            <div class="stats-value">{{ total_clicks }}</div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-label">Total Sales</div>
+            <div class="stats-value">{{ total_sales_count|default:0 }}</div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-label">Click-to-Sale Rate</div>
+            <div class="stats-value">
+                {% if total_clicks > 0 %}
+                    {{ click_to_sale_rate|floatformat:1 }}%
+                {% else %}
+                    0%
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Referral Link -->
     <div class="create-link-section">
-        <h2>Create New Referral Link</h2>
-        <form method="post" class="link-form">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Link Type</label>
-                    <select name="link_type" id="linkType">
-                        <option value="general">General Store Link</option>
-                        <option value="product">Specific Product</option>
-                        <option value="collection">Collection</option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="productSelect" style="display:none;">
-                    <label>Select Product</label>
-                    <select name="product_id">
-                        <option value="">Choose a product...</option>
-                        {% for product in products %}
-                        <option value="{{ product.id }}">{{ product.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Custom Campaign Name (Optional)</label>
-                <input type="text" name="campaign_name" placeholder="e.g., Instagram Bio, YouTube Description">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Generate Link</button>
-        </form>
+        <h2>Your Main Referral Link</h2>
+        <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+            This is your universal referral link that can be used anywhere
+        </p>
+        <div class="link-url-box">
+            <input 
+                type="text" 
+                id="mainLink" 
+                value="{{ affiliate_link }}" 
+                readonly
+                placeholder="Loading referral link..."
+            >
+            <button class="copy-btn" onclick="copyLinkToClipboard(document.getElementById('mainLink'))">
+                📋 Copy
+            </button>
+        </div>
+        <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn-action btn-stats" onclick="shareOnTwitter()">
+                𝕏 Twitter
+            </button>
+            <button class="btn-action btn-stats" onclick="shareOnFacebook()">
+                f Facebook
+            </button>
+            <button class="btn-action btn-stats" onclick="shareViaEmail()">
+                ✉️ Email
+            </button>
+            <button class="btn-action btn-stats" onclick="shareOnLinkedIn()">
+                in LinkedIn
+            </button>
+        </div>
     </div>
 
-    <!-- Existing Links -->
-    <div class="links-list-section">
-        <h2>Your Referral Links</h2>
-
-        <div class="links-grid">
-            <!-- General Link -->
-            <div class="link-card">
-                <div class="link-header">
-                    <div class="link-type-badge general">General</div>
-                    <div class="link-stats">
-                        <span><i class="fas fa-eye"></i> 1,234 clicks</span>
-                        <span><i class="fas fa-shopping-cart"></i> 28 sales</span>
-                    </div>
+    <!-- Available Banners -->
+    {% if banners %}
+    <div class="banners-section">
+        <h2>Available Banners for Sharing</h2>
+        <p style="color: var(--color-text-secondary); margin-bottom: 16px;">
+            Copy the embed code below and paste it on your website, blog, or other platforms
+        </p>
+        
+        <div class="banners-grid">
+            {% for banner in banners %}
+            <div class="banner-card">
+                <div class="banner-preview">
+                    {{ banner.size }} Banner
                 </div>
-
-                <div class="link-body">
-                    <p class="link-name">Main Store Link</p>
-                    <div class="link-url-box">
-                        <input type="text" value="https://emeraldsecrets.com/ref/ABC123" readonly>
-                        <button class="copy-btn" onclick="copyLink(this)">
-                            <i class="fas fa-copy"></i>
+                <div class="banner-info">
+                    <p class="banner-title">{{ banner.title }}</p>
+                    <p class="banner-size">📐 {{ banner.size }}</p>
+                    <div class="banner-code">{{ banner.embed_code|truncatewords:10 }}</div>
+                    <div class="banner-actions">
+                        <button class="btn-copy" onclick="copyBannerCode(this)">
+                            📋 Copy Code
                         </button>
                     </div>
-                    <p class="link-created">Created: Oct 15, 2024</p>
-                </div>
-
-                <div class="link-actions">
-                    <button class="btn-action btn-stats"><i class="fas fa-chart-line"></i> View Stats</button>
-                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i> Delete</button>
                 </div>
             </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
-            <!-- Product Link -->
-            <div class="link-card">
-                <div class="link-header">
-                    <div class="link-type-badge product">Product</div>
-                    <div class="link-stats">
-                        <span><i class="fas fa-eye"></i> 456 clicks</span>
-                        <span><i class="fas fa-shopping-cart"></i> 12 sales</span>
-                    </div>
-                </div>
-
-                <div class="link-body">
-                    <p class="link-name">Pure Rose Water - Instagram</p>
-                    <div class="link-url-box">
-                        <input type="text" value="https://emeraldsecrets.com/products/rose-water/ref/ABC123" readonly>
-                        <button class="copy-btn" onclick="copyLink(this)">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                    <p class="link-created">Created: Oct 20, 2024</p>
-                </div>
-
-                <div class="link-actions">
-                    <button class="btn-action btn-stats"><i class="fas fa-chart-line"></i> View Stats</button>
-                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i> Delete</button>
-                </div>
+    <!-- Quick Share Tips -->
+    <div style="background: var(--color-bg-3); border: 1px solid rgba(33, 128, 141, 0.2); border-radius: var(--radius-lg); padding: 24px; margin-top: 40px;">
+        <h3 style="margin-top: 0; color: var(--color-text);">💡 Tips for Maximum Conversions</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📱 Social Media</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Share your link in Instagram stories, Facebook posts, and Twitter threads for maximum reach
+                </p>
             </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📧 Email</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Include your referral link in email signatures and newsletters to followers
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">🌐 Website</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Embed the banner on your website sidebar or blog posts for passive referrals
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📺 Videos</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Add your link in YouTube video descriptions, pinned comments, and community posts
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">💬 Community</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Share authentically in relevant forums, Reddit, and community groups where appropriate
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 6px 0;">📞 Personal</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Share with friends and family via WhatsApp, Telegram, and direct messages
+                </p>
+            </div>
+        </div>
+    </div>
 
-            <!-- Collection Link -->
-            <div class="link-card">
-                <div class="link-header">
-                    <div class="link-type-badge collection">Collection</div>
-                    <div class="link-stats">
-                        <span><i class="fas fa-eye"></i> 789 clicks</span>
-                        <span><i class="fas fa-shopping-cart"></i> 18 sales</span>
-                    </div>
-                </div>
-
-                <div class="link-body">
-                    <p class="link-name">Face Care Collection - YouTube</p>
-                    <div class="link-url-box">
-                        <input type="text" value="https://emeraldsecrets.com/collections/face-care/ref/ABC123" readonly>
-                        <button class="copy-btn" onclick="copyLink(this)">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                    <p class="link-created">Created: Nov 1, 2024</p>
-                </div>
-
-                <div class="link-actions">
-                    <button class="btn-action btn-stats"><i class="fas fa-chart-line"></i> View Stats</button>
-                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i> Delete</button>
-                </div>
+    <!-- Link Performance Info -->
+    <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 24px; margin-top: 40px;">
+        <h3 style="margin-top: 0; color: var(--color-text);">📊 How Your Links Work</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">✅ 30-Day Tracking Window</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Earn commission on any purchase made within 30 days of clicking your link, even if they leave the site
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">💰 5% Commission</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    You earn 5% commission on every order from your referrals. No hidden fees or caps!
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">⏱️ Auto-Approval</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Commissions are automatically approved after 7 days and available to withdraw
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">📈 Real-Time Stats</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Track every click and conversion in real-time from your dashboard
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">🔒 Secure Tracking</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Cookies track visitors for 30 days across multiple devices and sessions
+                </p>
+            </div>
+            <div>
+                <p style="font-weight: 600; color: var(--color-text); margin: 0 0 8px 0;">🎯 No Limits</p>
+                <p style="margin: 0; font-size: 14px; color: var(--color-text-secondary);">
+                    Share as many links as you want with no restrictions or minimum performance requirements
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <script>
-// Show/hide product select based on link type
-document.getElementById('linkType').addEventListener('change', function() {
-    const productSelect = document.getElementById('productSelect');
-    if (this.value === 'product') {
-        productSelect.style.display = 'block';
-    } else {
-        productSelect.style.display = 'none';
-    }
-});
-
 // Copy link to clipboard
-function copyLink(button) {
-    const input = button.previousElementSibling;
-    input.select();
-    document.execCommand('copy');
+function copyLinkToClipboard(inputElement) {
+    inputElement.select();
     
-    const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-check"></i>';
-    setTimeout(() => {
-        button.innerHTML = originalText;
-    }, 2000);
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(inputElement.value).then(() => {
+            showNotification('✅ Link copied to clipboard!');
+        }).catch(() => {
+            fallbackCopy(inputElement);
+        });
+    } else {
+        fallbackCopy(inputElement);
+    }
 }
+
+// Fallback copy for older browsers
+function fallbackCopy(element) {
+    document.execCommand('copy');
+    showNotification('✅ Link copied to clipboard!');
+}
+
+// Copy banner code
+function copyBannerCode(button) {
+    const codeElement = button.parentElement.parentElement.querySelector('.banner-code');
+    const code = codeElement.textContent;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(() => {
+            showNotification('✅ Banner code copied!');
+        }).catch(() => {
+            fallbackCopyBanner(code);
+        });
+    } else {
+        fallbackCopyBanner(code);
+    }
+}
+
+function fallbackCopyBanner(code) {
+    const textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showNotification('✅ Banner code copied!');
+}
+
+// Show notification
+function showNotification(message) {
+    alert(message);
+    // Replace with toast notification if available in your template
+}
+
+// Share on Twitter
+function shareOnTwitter() {
+    const link = document.getElementById('mainLink').value;
+    const text = 'Join my affiliate program and earn 5% commission on every purchase! ' + link;
+    const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+    window.open(url, '_blank', 'width=600,height=400');
+}
+
+// Share on Facebook
+function shareOnFacebook() {
+    const link = document.getElementById('mainLink').value;
+    const url = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link);
+    window.open(url, '_blank', 'width=600,height=400');
+}
+
+// Share via Email
+function shareViaEmail() {
+    const link = document.getElementById('mainLink').value;
+    const subject = 'Join My Affiliate Program - Earn 5% Commission';
+    const body = 'Click my referral link to join the affiliate program and earn 5% commission on every purchase:\n\n' + link + '\n\nLooking forward to partnering with you!';
+    const url = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    window.open(url);
+}
+
+// Share on LinkedIn
+function shareOnLinkedIn() {
+    const link = document.getElementById('mainLink').value;
+    const text = 'I\'m now an affiliate partner! Join my referral program and earn 5% commission: ' + link;
+    const url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(link);
+    window.open(url, '_blank', 'width=600,height=400');
+}
+
+// Auto-select link on focus
+document.getElementById('mainLink')?.addEventListener('focus', function() {
+    this.select();
+});
 </script>
 {% endblock %}

@@ -1,55 +1,821 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Emerald Secrets</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-teal-800: rgba(41, 150, 161, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-green-500: rgba(34, 197, 94, 1);
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/accounts.css' %}">
-{% endblock %}
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+            --color-green-500-rgb: 34, 197, 94;
 
-{% block content %}
-<section class="account-section">
-    <h1>My Account</h1>
-    
-    <div class="account-layout">
-        <!-- Sidebar -->
-        <aside class="account-sidebar">
-            <a href="{% url 'accounts:order_list' %}" class="sidebar-link active">
-                <i class="fas fa-box"></i> My Orders
-            </a>
-            <a href="{% url 'accounts:wishlist' %}" class="sidebar-link">
-                <i class="far fa-heart"></i> Wishlist
-            </a>
-            <a href="{% url 'accounts:profile' %}" class="sidebar-link">
-                <i class="fas fa-user"></i> Profile Info
-            </a>
-            <a href="{% url 'accounts:settings' %}" class="sidebar-link">
-                <i class="fas fa-cog"></i> Settings
-            </a>
-        </aside>
+            --color-bg-1: rgba(59, 130, 246, 0.08);
+            --color-bg-2: rgba(245, 158, 11, 0.08);
+            --color-bg-3: rgba(34, 197, 94, 0.08);
+            --color-bg-4: rgba(239, 68, 68, 0.08);
+            --color-bg-5: rgba(147, 51, 234, 0.08);
+            --color-bg-6: rgba(249, 115, 22, 0.08);
+            --color-bg-7: rgba(236, 72, 153, 0.08);
+            --color-bg-8: rgba(6, 182, 212, 0.08);
 
-        <!-- Main Content -->
-        <div class="account-main">
-            <h2>My Orders</h2>
-            
-            {% for order in orders %}
-            <div class="order-card">
-                <div class="order-header">
-                    <div>
-                        <h3>Order #{{ order.id }}</h3>
-                        <p>Placed on {{ order.created_at|date:"M d, Y" }}</p>
-                    </div>
-                    <span class="order-status delivered">Delivered</span>
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-green-500);
+            --color-warning: var(--color-orange-500);
+            --color-info: var(--color-slate-500);
+            --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+            --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
+
+            --focus-ring: 0 0 0 3px var(--color-focus-ring);
+            --focus-outline: 2px solid var(--color-primary);
+            --status-bg-opacity: 0.15;
+            --status-border-opacity: 0.25;
+
+            --font-family-base: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-md: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --line-height-tight: 1.2;
+            --line-height-normal: 1.5;
+            --letter-spacing-tight: -0.01em;
+
+            --space-0: 0;
+            --space-1: 1px;
+            --space-2: 2px;
+            --space-4: 4px;
+            --space-6: 6px;
+            --space-8: 8px;
+            --space-10: 10px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+
+            --duration-fast: 150ms;
+            --duration-normal: 250ms;
+            --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+
+                --color-bg-1: rgba(29, 78, 216, 0.15);
+                --color-bg-2: rgba(180, 83, 9, 0.15);
+                --color-bg-3: rgba(21, 128, 61, 0.15);
+                --color-bg-4: rgba(185, 28, 28, 0.15);
+                --color-bg-5: rgba(107, 33, 168, 0.15);
+                --color-bg-6: rgba(194, 65, 12, 0.15);
+                --color-bg-7: rgba(190, 24, 93, 0.15);
+                --color-bg-8: rgba(8, 145, 178, 0.15);
+
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-primary-active: var(--color-teal-800);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-green-500);
+                --color-warning: var(--color-orange-400);
+                --color-info: var(--color-gray-300);
+                --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
+                --color-btn-primary-text: var(--color-slate-900);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: var(--font-size-base);
+            font-family: var(--font-family-base);
+            line-height: var(--line-height-normal);
+            color: var(--color-text);
+            background-color: var(--color-background);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            line-height: var(--line-height-tight);
+            margin-bottom: var(--space-8);
+        }
+
+        h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            line-height: var(--line-height-tight);
+            margin-bottom: var(--space-16);
+        }
+
+        h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-8);
+        }
+
+        p {
+            margin-bottom: var(--space-8);
+            color: var(--color-text-secondary);
+        }
+
+        /* Account Section */
+        .account-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-32) var(--space-20);
+        }
+
+        .account-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: var(--space-32);
+        }
+
+        /* Sidebar */
+        .account-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-8);
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-12) var(--space-16);
+            border-radius: var(--radius-base);
+            background: var(--color-surface);
+            color: var(--color-text);
+            text-decoration: none;
+            border: 1px solid var(--color-border);
+            transition: all var(--duration-fast) var(--ease-standard);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover {
+            background: var(--color-secondary);
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .sidebar-link.active {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border-color: var(--color-primary);
+        }
+
+        .sidebar-link i {
+            font-size: var(--font-size-lg);
+        }
+
+        /* Main Content */
+        .account-main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-24);
+        }
+
+        /* Order Card */
+        .order-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+
+        .order-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: var(--space-20);
+            background: var(--color-background);
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+
+        .order-header h3 {
+            margin-bottom: var(--space-4);
+            color: var(--color-text);
+        }
+
+        .order-header p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: var(--space-6) var(--space-12);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-bold);
+            text-transform: uppercase;
+            background: rgba(var(--color-green-500-rgb), 0.15);
+            color: var(--color-success);
+            border: 1px solid rgba(var(--color-green-500-rgb), 0.25);
+        }
+
+        .order-status.pending {
+            background: rgba(var(--color-orange-500-rgb), 0.15);
+            color: var(--color-warning);
+            border-color: rgba(var(--color-orange-500-rgb), 0.25);
+        }
+
+        .order-status.cancelled {
+            background: rgba(var(--color-red-500-rgb), 0.15);
+            color: var(--color-error);
+            border-color: rgba(var(--color-red-500-rgb), 0.25);
+        }
+
+        .order-body {
+            display: flex;
+            gap: var(--space-16);
+            align-items: center;
+            padding: var(--space-20);
+        }
+
+        .order-body img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--radius-base);
+            background: var(--color-background);
+        }
+
+        .order-details {
+            flex: 1;
+        }
+
+        .order-details h4 {
+            margin-bottom: var(--space-8);
+            color: var(--color-text);
+        }
+
+        .order-details p {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .order-price {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            text-align: right;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-32);
+            background: var(--color-surface);
+            border: 1px dashed var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: var(--space-16);
+        }
+
+        .empty-state-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+
+        .empty-state-text {
+            margin: 0;
+            color: var(--color-text-secondary);
+        }
+
+        /* Stats Grid */
+        .account-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-32);
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--space-8);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .account-section {
+                padding: var(--space-20) var(--space-16);
+            }
+
+            .account-layout {
+                grid-template-columns: 1fr;
+                gap: var(--space-20);
+            }
+
+            .account-sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-8);
+            }
+
+            .order-body {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .order-price {
+                text-align: center;
+            }
+
+            .account-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            h1 {
+                font-size: var(--font-size-2xl);
+            }
+
+            h2 {
+                font-size: var(--font-size-xl);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .account-section {
+                padding: var(--space-16);
+            }
+
+            .account-sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .account-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .order-body {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-12);
+            }
+
+            .order-body img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="account-section">
+        <h1>My Account</h1>
+
+        <!-- Stats Overview -->
+        <div class="account-stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Orders</div>
+                <div class="stat-value" id="totalOrders">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Spent</div>
+                <div class="stat-value" id="totalSpent">₹0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Wishlist Items</div>
+                <div class="stat-value" id="wishlistCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Account Status</div>
+                <div class="stat-value" id="accountStatus">Active</div>
+            </div>
+        </div>
+
+        <div class="account-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="account-sidebar">
+                <button class="sidebar-link active" onclick="switchTab('orders')">
+                    📦 My Orders
+                </button>
+                <button class="sidebar-link" onclick="switchTab('wishlist')">
+                    ❤️ Wishlist
+                </button>
+                <button class="sidebar-link" onclick="switchTab('profile')">
+                    👤 Profile Info
+                </button>
+                <button class="sidebar-link" onclick="switchTab('settings')">
+                    ⚙️ Settings
+                </button>
+                <button class="sidebar-link" onclick="switchTab('affiliate')">
+                    🔗 Affiliate Program
+                </button>
+            </aside>
+
+            <!-- Main Content Area -->
+            <div class="account-main">
+                <!-- Orders Tab -->
+                <div id="orders-tab" class="tab-content active">
+                    <h2>My Orders</h2>
+                    <div id="orders-container"></div>
                 </div>
-                <div class="order-body">
-                    <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}">
-                    <div class="order-details">
-                        <h4>{{ order.product.name }}</h4>
-                        <p>Quantity: {{ order.quantity }}</p>
+
+                <!-- Wishlist Tab -->
+                <div id="wishlist-tab" class="tab-content" style="display: none;">
+                    <h2>My Wishlist</h2>
+                    <div id="wishlist-container"></div>
+                </div>
+
+                <!-- Profile Tab -->
+                <div id="profile-tab" class="tab-content" style="display: none;">
+                    <h2>Profile Information</h2>
+                    <form id="profile-form" onsubmit="saveProfile(event)">
+                        <div style="display: grid; gap: var(--space-16);">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16);">
+                                <input type="text" id="firstName" placeholder="First Name" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);">
+                                <input type="text" id="lastName" placeholder="Last Name" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);">
+                            </div>
+                            <input type="email" id="email" placeholder="Email Address" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);">
+                            <input type="tel" id="phone" placeholder="Phone Number" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);">
+                            <textarea id="address" placeholder="Street Address" rows="3" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);"></textarea>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16);">
+                                <input type="text" id="city" placeholder="City" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);">
+                                <input type="text" id="zip" placeholder="Zip Code" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-surface); color: var(--color-text);">
+                            </div>
+                            <button type="submit" style="padding: var(--space-12) var(--space-20); background: var(--color-primary); color: var(--color-btn-primary-text); border: none; border-radius: var(--radius-base); cursor: pointer; font-weight: var(--font-weight-bold); transition: all var(--duration-fast) var(--ease-standard);">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="settings-tab" class="tab-content" style="display: none;">
+                    <h2>Account Settings</h2>
+                    <div style="display: grid; gap: var(--space-24);">
+                        <div style="background: var(--color-surface); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-20);">
+                            <h3 style="margin-top: 0;">Change Password</h3>
+                            <form onsubmit="changePassword(event)">
+                                <div style="display: grid; gap: var(--space-16);">
+                                    <input type="password" id="currentPassword" placeholder="Current Password" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-background); color: var(--color-text);">
+                                    <input type="password" id="newPassword" placeholder="New Password" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-background); color: var(--color-text);">
+                                    <input type="password" id="confirmPassword" placeholder="Confirm Password" style="padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-background); color: var(--color-text);">
+                                    <button type="submit" style="padding: var(--space-12) var(--space-20); background: var(--color-primary); color: var(--color-btn-primary-text); border: none; border-radius: var(--radius-base); cursor: pointer; font-weight: var(--font-weight-bold);">
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div style="background: var(--color-surface); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-20);">
+                            <h3 style="margin-top: 0;">Preferences</h3>
+                            <div style="display: grid; gap: var(--space-12);">
+                                <label style="display: flex; align-items: center; gap: var(--space-8); cursor: pointer;">
+                                    <input type="checkbox" id="emailNotifications" checked style="cursor: pointer;">
+                                    <span>Receive email notifications</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: var(--space-8); cursor: pointer;">
+                                    <input type="checkbox" id="orderUpdates" checked style="cursor: pointer;">
+                                    <span>Order status updates</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: var(--space-8); cursor: pointer;">
+                                    <input type="checkbox" id="promotions" style="cursor: pointer;">
+                                    <span>Promotional offers and deals</span>
+                                </label>
+                                <button onclick="savePreferences()" style="margin-top: var(--space-16); padding: var(--space-12) var(--space-20); background: var(--color-primary); color: var(--color-btn-primary-text); border: none; border-radius: var(--radius-base); cursor: pointer; font-weight: var(--font-weight-bold); width: fit-content;">
+                                    Save Preferences
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="order-price">₹{{ order.total }}</div>
+                </div>
+
+                <!-- Affiliate Tab -->
+                <div id="affiliate-tab" class="tab-content" style="display: none;">
+                    <h2>Affiliate Program</h2>
+                    <div style="background: var(--color-bg-3); border: 1px solid rgba(33, 128, 141, 0.2); border-radius: var(--radius-lg); padding: var(--space-24);">
+                        <h3 style="margin-top: 0; color: var(--color-text);">Join Our Affiliate Program</h3>
+                        <p style="margin-bottom: var(--space-16); color: var(--color-text-secondary);">
+                            Earn 5% commission on every referral! Share your unique link and start earning passive income.
+                        </p>
+                        <button id="affiliateBtn" onclick="joinAffiliate()" style="padding: var(--space-12) var(--space-24); background: var(--color-primary); color: var(--color-btn-primary-text); border: none; border-radius: var(--radius-base); cursor: pointer; font-weight: var(--font-weight-bold); font-size: var(--font-size-base); transition: all var(--duration-fast) var(--ease-standard);">
+                            Join Affiliate Program
+                        </button>
+                        <div id="affiliateInfo" style="margin-top: var(--space-24); display: none;">
+                            <div style="background: var(--color-surface); border: 1px solid var(--color-card-border); border-radius: var(--radius-lg); padding: var(--space-20);">
+                                <p style="margin-bottom: var(--space-12); color: var(--color-text-secondary);">Your Affiliate Code:</p>
+                                <div style="display: flex; gap: var(--space-8);">
+                                    <input type="text" id="affiliateCode" readonly style="flex: 1; padding: var(--space-12); border: 1px solid var(--color-border); border-radius: var(--radius-base); background: var(--color-background); color: var(--color-primary); font-family: var(--font-family-mono); font-weight: var(--font-weight-bold);">
+                                    <button onclick="copyAffiliateCode()" style="padding: var(--space-12) var(--space-16); background: var(--color-secondary); color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-base); cursor: pointer; font-weight: var(--font-weight-bold); transition: all var(--duration-fast) var(--ease-standard);">
+                                        📋 Copy
+                                    </button>
+                                </div>
+                                <p style="margin-top: var(--space-16); margin-bottom: var(--space-8); color: var(--color-text-secondary);">Your Affiliate Dashboard:</p>
+                                <a href="#" style="display: inline-block; padding: var(--space-12) var(--space-20); background: var(--color-primary); color: var(--color-btn-primary-text); border-radius: var(--radius-base); text-decoration: none; font-weight: var(--font-weight-bold); transition: all var(--duration-fast) var(--ease-standard);">
+                                    View Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
-{% endblock %}
+    </section>
+
+    <script>
+        // Sample Data
+        const sampleOrders = [
+            {
+                id: 12001,
+                name: "Pure Rose Water - 100ml",
+                quantity: 1,
+                price: 599,
+                date: "Dec 20, 2024",
+                status: "delivered",
+                image: "🌹"
+            },
+            {
+                id: 12002,
+                name: "Neem & Tulsi Face Pack - 50g",
+                quantity: 2,
+                price: 1098,
+                date: "Dec 15, 2024",
+                status: "delivered",
+                image: "🌿"
+            },
+            {
+                id: 12003,
+                name: "Sandalwood Face Mask - 75g",
+                quantity: 1,
+                price: 799,
+                date: "Dec 10, 2024",
+                status: "pending",
+                image: "🎭"
+            }
+        ];
+
+        const sampleWishlist = [
+            { id: 1, name: "Organic Aloe Vera Gel", price: 449, image: "🌱" },
+            { id: 2, name: "Haldi & Chandan Pack", price: 649, image: "✨" },
+            { id: 3, name: "Lavender Essential Oil", price: 499, image: "🌸" }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+            updateStats();
+        });
+
+        // Load Orders
+        function loadOrders() {
+            const container = document.getElementById('orders-container');
+            if (sampleOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🛍️</div>
+                        <div class="empty-state-title">No Orders Yet</div>
+                        <div class="empty-state-text">Start shopping to see your orders here</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = sampleOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <h3>Order #${order.id}</h3>
+                            <p>Placed on ${order.date}</p>
+                        </div>
+                        <span class="order-status ${order.status}">${order.status.toUpperCase()}</span>
+                    </div>
+                    <div class="order-body">
+                        <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 48px; border-radius: var(--radius-base); background: var(--color-background);">
+                            ${order.image}
+                        </div>
+                        <div class="order-details">
+                            <h4>${order.name}</h4>
+                            <p>Quantity: ${order.quantity}</p>
+                        </div>
+                        <div class="order-price">₹${order.price.toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load Wishlist
+        function loadWishlist() {
+            const container = document.getElementById('wishlist-container');
+            if (sampleWishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❤️</div>
+                        <div class="empty-state-title">Wishlist Empty</div>
+                        <div class="empty-state-text">Add items to your wishlist to save them for later</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = sampleWishlist.map(item => `
+                <div class="order-card">
+                    <div class="order-body">
+                        <div style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 48px; border-radius: var(--radius-base); background: var(--color-background);">
+                            ${item.image}
+                        </div>
+                        <div class="order-details">
+                            <h4>${item.name}</h4>
+                            <p>Perfect for your skincare routine</p>
+                        </div>
+                        <div class="order-price">₹${item.price.toLocaleString('en-IN')}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Switch Tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            event.target.classList.add('active');
+
+            if (tabName === 'wishlist') {
+                loadWishlist();
+            } else if (tabName === 'orders') {
+                loadOrders();
+            }
+        }
+
+        // Update Stats
+        function updateStats() {
+            document.getElementById('totalOrders').textContent = sampleOrders.length;
+            const totalSpent = sampleOrders.reduce((sum, order) => sum + order.price, 0);
+            document.getElementById('totalSpent').textContent = '₹' + totalSpent.toLocaleString('en-IN');
+            document.getElementById('wishlistCount').textContent = sampleWishlist.length;
+        }
+
+        // Save Profile
+        function saveProfile(e) {
+            e.preventDefault();
+            alert('✅ Profile updated successfully!');
+        }
+
+        // Change Password
+        function changePassword(e) {
+            e.preventDefault();
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alert('❌ Passwords do not match');
+                return;
+            }
+
+            if (newPass.length < 6) {
+                alert('❌ Password must be at least 6 characters');
+                return;
+            }
+
+            alert('✅ Password changed successfully!');
+            e.target.reset();
+        }
+
+        // Save Preferences
+        function savePreferences() {
+            alert('✅ Preferences saved successfully!');
+        }
+
+        // Affiliate Functions
+        function joinAffiliate() {
+            document.getElementById('affiliateBtn').style.display = 'none';
+            document.getElementById('affiliateInfo').style.display = 'block';
+            document.getElementById('affiliateCode').value = 'ES-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+        }
+
+        function copyAffiliateCode() {
+            const code = document.getElementById('affiliateCode');
+            code.select();
+            document.execCommand('copy');
+            alert('✅ Affiliate code copied to clipboard!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!-- Google Analytics Event Tracking -->
+<script>
+    // Track Page View (automatic)
+    // gtag is already initialized in base.html
+
+    // Track View Item (Product Page)
+    function trackProductView(productName, productId, price) {
+        gtag('event', 'view_item', {
+            'items': [{
+                'item_id': productId,
+                'item_name': productName,
+                'price': price,
+                'currency': 'INR'
+            }]
+        });
+    }
+
+    // Track Add to Cart
+    function trackAddToCart(productName, productId, price, quantity) {
+        gtag('event', 'add_to_cart', {
+            'items': [{
+                'item_id': productId,
+                'item_name': productName,
+                'price': price,
+                'quantity': quantity,
+                'currency': 'INR'
+            }]
+        });
+    }
+
+    // Track Checkout
+    function trackCheckout(value, currency) {
+        gtag('event', 'begin_checkout', {
+            'value': value,
+            'currency': currency
+        });
+    }
+
+    // Track Purchase (IMPORTANT - Call this on order confirmation)
+    function trackPurchase(orderId, orderTotal, items) {
+        gtag('event', 'purchase', {
+            'transaction_id': orderId,
+            'value': orderTotal,
+            'currency': 'INR',
+            'items': items
+        });
+    }
+</script>

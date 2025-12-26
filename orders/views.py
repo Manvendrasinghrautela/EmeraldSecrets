@@ -456,13 +456,14 @@ def create_order(request):
                         )
                         
                         program = affiliate.program
+                        order_total = pricing['total']  
                         commission_rate = Decimal(str(program.commission_rate)) / Decimal("100")
-                        commission_amount = total * commission_rate
+                        commission_amount = order_total * commission_rate
                         
                         AffiliateOrder.objects.create(
                             affiliate=affiliate,
                             order=order,
-                            order_amount=total,
+                            order_amount=order_total,
                             commission_rate=program.commission_rate,
                             commission_amount=commission_amount,
                             status='pending'

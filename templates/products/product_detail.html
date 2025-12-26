@@ -284,46 +284,57 @@
 </div>
 
 <script>
-function changeImage(src) {
-    document.getElementById('main-image').src = src;
-    document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
-    event.target.closest('.thumbnail').classList.add('active');
-}
-
-function openTab(evt, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].classList.remove("active");
+    // Track when user views the product
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof trackProductView === 'function') {
+            trackProductView(
+                '{{ product.name }}',
+                '{{ product.id }}',
+                {{ product.price }}
+            );
+        }
+    });
+    
+    function changeImage(src) {
+        document.getElementById('main-image').src = src;
+        document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+        event.target.closest('.thumbnail').classList.add('active');
     }
-    tablinks = document.getElementsByClassName("tab-header");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].classList.remove("active");
+    
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-header");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
     }
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-}
-
-function increaseQuantity() {
-    let qty = document.getElementById('quantity');
-    let max = parseInt(qty.getAttribute('max'));
-    if (parseInt(qty.value) < max) {
-        qty.value = parseInt(qty.value) + 1;
-        document.getElementById('cart-quantity').value = qty.value;
+    
+    function increaseQuantity() {
+        let qty = document.getElementById('quantity');
+        let max = parseInt(qty.getAttribute('max'));
+        if (parseInt(qty.value) < max) {
+            qty.value = parseInt(qty.value) + 1;
+            document.getElementById('cart-quantity').value = qty.value;
+        }
     }
-}
-
-function decreaseQuantity() {
-    let qty = document.getElementById('quantity');
-    if (qty.value > 1) {
-        qty.value = parseInt(qty.value) - 1;
-        document.getElementById('cart-quantity').value = qty.value;
+    
+    function decreaseQuantity() {
+        let qty = document.getElementById('quantity');
+        if (qty.value > 1) {
+            qty.value = parseInt(qty.value) - 1;
+            document.getElementById('cart-quantity').value = qty.value;
+        }
     }
-}
-
-// Update hidden cart quantity on page load
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('cart-quantity').value = document.getElementById('quantity').value;
-});
-</script>
+    
+    // Update hidden cart quantity on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('cart-quantity').value = document.getElementById('quantity').value;
+    });
+    </script>
 {% endblock %}
